@@ -2,8 +2,8 @@ from unittest import mock
 
 import pytest
 
-from classroom_manager.classroom.user import User
-from classroom_manager.process_creators.classroom_process_creator import ClassroomProcessCreator
+from server.classroom_manager.classroom.user import User
+from server.classroom_manager.process_creators.classroom_process_creator import ClassroomProcessCreator
 
 
 @pytest.fixture
