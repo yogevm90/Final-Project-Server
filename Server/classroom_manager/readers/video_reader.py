@@ -1,4 +1,4 @@
-from classroom_manager.readers.interfaces.reader import Reader
+from server.classroom_manager.readers.interfaces.reader import Reader
 
 
 class VideoReader(Reader):

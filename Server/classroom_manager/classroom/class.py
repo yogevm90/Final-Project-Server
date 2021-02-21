@@ -1,7 +1,7 @@
 from threading import Lock
 from typing import List
 
-from classroom_manager.classroom.user import User
+from server.classroom_manager.classroom.user import User
 
 
 class ClassContainer(object):

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from classroom_manager.classroom.user_connection_details import UserConnectionDetails
+from server.classroom_manager.classroom.user_connection_details import UserConnectionDetails
 
 
 class DataSenderInterface(ABC):
