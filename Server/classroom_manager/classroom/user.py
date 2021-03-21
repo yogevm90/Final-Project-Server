@@ -2,6 +2,11 @@ from server.classroom_manager.classroom.user_connection_details import UserConne
 
 
 class User(object):
+    _id: str
+    _name: str
+    _surname: str
+    _connection_details: UserConnectionDetails
+
     def __init__(self, **kwargs):
         self._id = kwargs["id"]
         self._name = kwargs["name"]
