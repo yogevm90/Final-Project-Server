@@ -1,12 +1,13 @@
 from server.classroom_manager.classroom.user_connection_details import UserConnectionDetails
+from server.interfaces.jsonable import Jsonable
 
 
-class User(object):
+class User(Jsonable):
     _id: str
+
     _name: str
     _surname: str
     _connection_details: UserConnectionDetails
-
     def __init__(self, **kwargs):
         self._id = kwargs["id"]
         self._name = kwargs["name"]
@@ -36,3 +37,6 @@ class User(object):
     @property
     def ConnectionDetails(self):
         return self._connection_details
+
+    def json(self):
+        pass

@@ -1,8 +1,10 @@
 from datetime import datetime
 import datetime as dt
 
+from server.interfaces.jsonable import Jsonable
 
-class ClassroomConfig(object):
+
+class ClassroomConfig(Jsonable):
     def __init__(self, classroom_id, user_ids, working_dir, start, end, day):
         self._classroom_id = classroom_id
         self._user_ids = user_ids
