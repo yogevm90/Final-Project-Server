@@ -2,17 +2,20 @@ from server.classroom_manager.classroom.user_connection_details import UserConne
 from server.interfaces.jsonable import Jsonable
 
 
-class User(Jsonable):
+class   User(Jsonable):
     _id: str
-
     _name: str
     _surname: str
     _connection_details: UserConnectionDetails
-    def __init__(self, **kwargs):
-        self._id = kwargs["id"]
-        self._name = kwargs["name"]
-        self._surname = kwargs["surname"]
-        self._connection_details = UserConnectionDetails(kwargs["ip"], kwargs["port"])
+
+    def __init__(self, user_id, name, surname, user_connection_details: UserConnectionDetails, is_student=False,
+                 is_ok=True):
+        self._id = user_id
+        self._name = name
+        self._surname = surname
+        self._is_student = is_student
+        self._is_ok = is_ok
+        self._connection_details = user_connection_details
 
     @property
     def UserId(self):
@@ -23,7 +26,7 @@ class User(Jsonable):
         return self._name
 
     @property
-    def surname(self):
+    def Surname(self):
         return self._surname
 
     @property
@@ -38,5 +41,18 @@ class User(Jsonable):
     def ConnectionDetails(self):
         return self._connection_details
 
+    @property
+    def IsStudent(self):
+        return self._is_student
+
+    def set_is_ok(self, is_ok):
+        self._is_ok = is_ok
+
     def json(self):
-        pass
+        return {
+            "id": self._id,
+            "name": self._name,
+            "surname": self._surname,
+            "isStudent": self._is_student,
+            "isOk": self._is_ok,
+        }
