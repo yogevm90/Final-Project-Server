@@ -1,0 +1,2 @@
+class PortIsNotAvailableException(Exception):
+    pass

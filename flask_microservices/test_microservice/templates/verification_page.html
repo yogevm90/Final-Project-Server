@@ -1,0 +1,21 @@
+{% extends "base_page.html" %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block card_header %}
+{% if failed %}
+Failed To Verify :(
+{% else %}
+Verification Was Successful :)
+{% endif %}
+{% endblock %}
+{% block card_body %}
+{% if failed %}
+<img src="{{ url_for('static', filename='exclamation-mark-red.png') }}"/>
+{% else %}
+<img src="{{ url_for('static', filename='exclamation-mark-green.png') }}"/>
+{% endif %}
+<h1 class="my-4">
+{{msg}}
+</h1>
+{% endblock %}

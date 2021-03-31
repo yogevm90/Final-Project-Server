@@ -1,0 +1,17 @@
+{
+  "executor": {
+    "module": "flask_microservices.flask_executor.flask_executor",
+    "name": "FlaskExecutor"
+  },
+  "apps": {
+    "TestApp": {
+      "module": "flask_microservices.test_microservice.test_app",
+      "name": "TestApp",
+      "port": 5000,
+      "args": [],
+      "kwargs": {
+        "server_ip": "127.0.0.1"
+      }
+    }
+  }
+}

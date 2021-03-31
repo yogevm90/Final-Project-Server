@@ -1,0 +1,20 @@
+{% extends "base_page.html" %}
+{% block head %}
+  {{ super() }}
+<script src="{{ url_for('static', filename='common.js') }}"></script>
+{% endblock %}
+{% block card_header %} Verify Test Enter {% endblock %}
+{% block card_body %}
+<div>
+    <h1>
+        Verifying Test: <b id="testId">{{test_id}}</b>
+    </h1>
+    <div class="form-group my-3">
+        <label for="checkId">Please Enter The ID In the Test</label>
+        <input type="text" class="form-control" id="checkId" placeholder="Enter ID"/>
+    </div>
+    <form id="verifyForm" action="">
+        <button type="submit" onclick="SetValueToSubmit()" class="btn btn-primary my-3">SUBMIT</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base_page.html" %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block card_header %} Scan The QR-Code Please {% endblock %}
+{% block card_body %}
+<img src="{{ url_for('static', filename=qr_code_file) }}"/>
+<div>
+  <h1>
+    Please enter the following code in the link that the QR Code above directs you to:
+    <br>
+    <b>{{code}}</b>
+  </h1>
+</div>
+{% endblock %}
