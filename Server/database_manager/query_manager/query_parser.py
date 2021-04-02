@@ -1,17 +1,22 @@
 import json
 from json import JSONDecodeError
 
-from Server.database_manager.exception_types import InvalidRequestException, WrongPasswordException
-from Server.database_manager.authentication_manager.authentication_manager import AuthenticationManager
+from server.database_manager.data_manager.database_data_manager import DatabaseDataManager
+from server.database_manager.exception_types import InvalidRequestException, WrongPasswordException
+from server.database_manager.authentication_manager.authentication_manager import AuthenticationManager
+from server.database_manager.interfaces.query_validator_interface import QueryValidatorInterface
 
 valid_request_types = ['get', 'set']
 valid_request_location = ['class', 'user']
 
 
-class QueryParser:
-    def __init__(self, db_manager):
-        self.db_manager = db_manager
-        self.authentication_manager = AuthenticationManager(db_manager)
+class QueryValidator(QueryValidatorInterface):
+    _db_manager: DatabaseDataManager
+    _authentication_manager: AuthenticationManager
+
+    def __init__(self, db_manager: DatabaseDataManager, authentication_manager: AuthenticationManager):
+        self._db_manager = db_manager
+        self._authentication_manager = authentication_manager
 
     def validate_query(self, request):
         # Check format
@@ -23,7 +28,7 @@ class QueryParser:
         # Check user authority
         requesting_user = json_obj['username']
         requesting_password = json_obj['password']
-        if not self.authentication_manager.validate_user(requesting_user, requesting_password):
+        if not self._authentication_manager.validate_user(requesting_user, requesting_password):
             raise WrongPasswordException('Authentication Error', requesting_user)
 
         # Check request type

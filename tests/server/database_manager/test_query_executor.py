@@ -10,12 +10,12 @@ def query_executor():
 
 
 def test_execute_query_get_user(query_executor):
-    user_details = query_executor.get_request('user', 'yoni')
+    user_details = query_executor._get_request('user', 'yoni')
     assert user_details['age'] == 3
 
 
 def test_execute_query_get_class(query_executor):
-    class_details = query_executor.get_request('class', 'class1')
+    class_details = query_executor._get_request('class', 'class1')
     assert class_details['teacher'] == 'dana'
 
 

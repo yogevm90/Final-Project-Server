@@ -11,10 +11,16 @@ from server.test_manager.data_containers.question import Question
 
 class Test(Serializable, Jsonable):
     _questions: List[Question]
+    _test_id: str
+    _classroom: str
+    _teacher: str
+    _path_to_pickled_file: Path
 
-    def __init__(self, test_id: str):
+    def __init__(self, test_id: str, classroom: str, teacher: str):
         self._questions = []
         self._test_id = test_id
+        self._classroom = classroom
+        self._teacher = teacher
         self._path_to_pickled_file = self._get_pickled_file_path()
 
     @property
@@ -28,6 +34,14 @@ class Test(Serializable, Jsonable):
     @property
     def PickledFilePath(self):
         return self._path_to_pickled_file
+
+    @property
+    def Classroom(self):
+        return self._classroom
+
+    @property
+    def Teacher(self):
+        return self._teacher
 
     def set_pickled_path(self, path):
         self._path_to_pickled_file = path
@@ -43,10 +57,11 @@ class Test(Serializable, Jsonable):
             pickle.dump(self, pickled_file)
 
     def deserialize(self):
-        if os.path.isfile(self._path_to_pickled_file):
+        if self._path_to_pickled_file.is_file():
             with open(self._path_to_pickled_file, "rb") as pickled_file:
                 deserialized_test = pickle.load(pickled_file)
                 self._questions += deserialized_test.Questions
+                self._classroom = deserialized_test.Classroom
                 self._path_to_pickled_file = deserialized_test.PickledFilePath
 
     def _get_pickled_file_path(self):
@@ -55,5 +70,7 @@ class Test(Serializable, Jsonable):
     def json(self):
         return {
             "id": self._test_id,
+            "classroom": self._classroom,
+            "teacher": self._teacher,
             "questions": [q.json() for q in self._questions]
         }

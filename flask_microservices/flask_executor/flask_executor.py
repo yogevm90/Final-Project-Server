@@ -1,5 +1,4 @@
-import json
-from multiprocessing.context import Process
+from time import sleep
 from typing import Dict
 
 
@@ -13,10 +12,14 @@ class FlaskExecutor(MicroserviceRunnerInterface):
 
     def __init__(self):
         self._apps = {}
+        self._running = True
 
     def start(self):
-        while True:
-            pass
+        while self._running and self._apps:
+            sleep(5)
+
+    def stop(self):
+        self._running = False
 
     def add_microservice(self, app, port: int, microservice_args, microservice_kwargs):
         if port not in self._apps:

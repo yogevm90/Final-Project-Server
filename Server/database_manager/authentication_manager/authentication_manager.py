@@ -1,14 +1,18 @@
 import bcrypt
 
+from server.database_manager.data_manager.database_data_manager import DatabaseDataManager
 
-class AuthenticationManager:
-    def __init__(self, db_data_manager):
-        self.db_data_manager = db_data_manager
+
+class AuthenticationManager(object):
+    _db_data_manager: DatabaseDataManager
+
+    def __init__(self, db_data_manager: DatabaseDataManager):
+        self._db_data_manager = db_data_manager
 
     def validate_user(self, username, text_password):
-        user_document = self.db_data_manager.get_user_by_name(username)
+        user_document = self._db_data_manager.get_user_by_name(username)
         hashed_password = user_document['password']
-        return self.check_password(text_password, hashed_password)
+        return AuthenticationManager.check_password(text_password, hashed_password)
 
     @staticmethod
     def get_hashed_password(text_password):
@@ -29,7 +33,7 @@ class AuthenticationManager:
         if request_type == 'get':
             if request_location == 'user':
                 return True
-            if self.db_data_manager.user_participating_class(username, request_json['name']):
+            if self._db_data_manager.user_participating_class(username, request_json['name']):
                 return True
         else:   # set request
             if request_location == 'user':
@@ -37,14 +41,14 @@ class AuthenticationManager:
                     return True
                 return False
             # class request
-            if self.db_data_manager.is_teacher(username, request_json['name']):
+            if self._db_data_manager.is_teacher(username, request_json['name']):
                 return True
             return False
 
     def check_if_admin(self, username):
-        user_document = self.db_data_manager.get_user_by_name(username)
+        user_document = self._db_data_manager.get_user_by_name(username)
         try:
             if user_document['admin']:
                 return True
-        except:
+        except Exception:
             return False

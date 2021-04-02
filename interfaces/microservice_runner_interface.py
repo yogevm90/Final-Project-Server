@@ -7,6 +7,10 @@ class MicroserviceRunnerInterface(ABC):
         pass
 
     @abstractmethod
+    def stop(self):
+        pass
+
+    @abstractmethod
     def add_microservice(self, app, port: int, microservice_args, microservice_kwargs):
         pass
 
