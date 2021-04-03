@@ -2,8 +2,7 @@ import os
 import uuid
 from typing import Dict
 
-from flask import request, render_template, make_response, jsonify
-from werkzeug.useragents import UserAgentParser
+import flask
 
 from flask_microservices.flask_executor.flask_app_base import FlaskAppBase
 from flask_microservices.test_microservice.test_user_agent_validator import TestUserAgentValidator
@@ -22,30 +21,7 @@ class TestApp(FlaskAppBase):
         self._main_server_port = main_server_port
         self._server_ip = server_ip
         self._setup()
-        self._user_redirects["1"] = {
-            "verification_id": str(1),
-            "remaining_tries": 3
-        }
         self._test_container = TestContainer()
-
-    def actual_start_test(self):
-        data = request.get_json()
-        if TestApp._data_is_valid(data):
-            test_id = TestApp._get_test_id(data)
-            redirect_url_id = uuid.uuid4()
-            self._user_redirects[str(test_id)] = {
-                "verification_id": str(redirect_url_id),
-                "remaining_tries": 3
-            }
-            return render_template("qr_code_page.html",
-                                   qr_code_file="test_url.png",
-                                   text_center=True,
-                                   code=redirect_url_id)
-        else:
-            return render_template("verification_page.html",
-                                   text_center=True,
-                                   failed=True,
-                                   msg="")
 
     def _setup(self):
         @self.route("/StartTest", methods=["GET"])
@@ -54,24 +30,15 @@ class TestApp(FlaskAppBase):
 
         @self.route("/VerifyTest/<test_id>/<verification_id>")
         def verify(test_id, verification_id):
-            failed = True
-            if self._verification_is_successfull(test_id, verification_id):
-                failed = False
-            return render_template("verification_page.html",
-                                   text_center=True,
-                                   failed=failed,
-                                   msg=self._user_redirects[test_id]["msg"])
+            return self.actual_verify(test_id, verification_id)
 
         @self.route("/VerifyYourTest/<test_id>")
         def verify_your_test(test_id):
-            if test_id in self._user_redirects:
-                return render_template("verify_the_student.html",
-                                       test_id=test_id)
+            return self.actual_verify_your_test(test_id)
 
         @self.route("/AddTest", methods=["POST"])
         def add_test():
-            self._test_container.add_test(Test().from_json(request.get_json()))
-            return jsonify({"status": "done"})
+            return self.actual_add_test()
 
     @classmethod
     def _get_test_id(cls, data: Dict):
@@ -85,7 +52,40 @@ class TestApp(FlaskAppBase):
     def _data_is_valid(cls, data):
         return True
 
-    def _verification_is_successfull(self, test_id, verification_id):
+    def _fail_test(self, test_id):
+        self._user_redirects[test_id]["msg"] = "YOU FAILED THE TEST! \nGOOD LUCK!"
+
+    def actual_start_test(self):
+        data = flask.request.get_json()
+        if TestApp._data_is_valid(data):
+            test_id = TestApp._get_test_id(data)
+            redirect_url_id = uuid.uuid4()
+            self._user_redirects[str(test_id)] = {
+                "verification_id": str(redirect_url_id),
+                "remaining_tries": 3
+            }
+            return flask.render_template("qr_code_page.html",
+                                         qr_code_file="test_url.png",
+                                         text_center=True,
+                                         code=redirect_url_id)
+        else:
+            return flask.render_template("verification_page.html",
+                                         text_center=True,
+                                         failed=True,
+                                         msg="")
+
+    def actual_verify(self, test_id, verification_id):
+        failed = True
+        if self._verification_is_successful(test_id, verification_id):
+            failed = False
+
+        self._user_redirects[test_id]["remaining_tries"] -= 1
+        return flask.render_template("verification_page.html",
+                                     text_center=True,
+                                     failed=failed,
+                                     msg=self._user_redirects[test_id]["msg"])
+
+    def _verification_is_successful(self, test_id, verification_id):
         result = True
         self._user_redirects[test_id]["msg"] = ""
 
@@ -97,7 +97,7 @@ class TestApp(FlaskAppBase):
             result = False
             self._user_redirects[test_id]["msg"] += "Invalid ID inserted!\n"
 
-        if not TestUserAgentValidator.validate(request.user_agent.platform):
+        if not TestUserAgentValidator.validate(flask.request.user_agent.platform):
             result = False
             self._user_redirects[test_id]["remaining_tries"] = 0
             self._user_redirects[test_id]["msg"] = "Next time you try to insert the ID from " \
@@ -105,5 +105,15 @@ class TestApp(FlaskAppBase):
 
         return result
 
-    def _fail_test(self, test_id):
-        self._user_redirects[test_id]["msg"] = "YOU FAILED THE TEST! \nGOOD LUCK!"
+    def actual_verify_your_test(self, test_id):
+        if test_id in self._user_redirects:
+            return flask.render_template("verify_the_student.html",
+                                         test_id=test_id)
+        return flask.render_template("verification_page.html",
+                                     text_center=True,
+                                     failed=True,
+                                     msg=f"Failed to verify student for test: {test_id}")
+
+    def actual_add_test(self):
+        self._test_container.add_test(Test().from_json(flask.request.get_json()))
+        return flask.jsonify({"status": "done"})

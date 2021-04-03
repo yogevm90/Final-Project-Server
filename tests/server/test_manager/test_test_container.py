@@ -44,7 +44,7 @@ def run_container_pickle_and_unpickle(tests, json_path):
     test_container.deserialize()
 
     # Assert
-    for expected_test, actual_test in zip(tests, test_container.Tests):
+    for expected_test, actual_test in zip(tests, test_container.Tests.values()):
         assert expected_test.TestId == actual_test.TestId, \
             f"Unexpected test {expected_test.TestId}"
         assert expected_test.PickledFilePath == actual_test.PickledFilePath

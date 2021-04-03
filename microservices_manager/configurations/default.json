@@ -12,6 +12,13 @@
       "kwargs": {
         "server_ip": "127.0.0.1"
       }
+    },
+    "DBApp": {
+      "module": "flask_microservices.db_microservice.db_app",
+      "name": "DBApp",
+      "port": 5001,
+      "args": [],
+      "kwargs": {}
     }
   }
 }

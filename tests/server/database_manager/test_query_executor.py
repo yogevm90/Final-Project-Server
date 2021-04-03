@@ -1,6 +1,6 @@
 import pytest
 
-from Server.database_manager.query_manager.query_executor import QueryExecutor
+from server.database_manager.query_manager.query_executor import QueryExecutor
 from tests.server.database_manager import pre_test
 
 

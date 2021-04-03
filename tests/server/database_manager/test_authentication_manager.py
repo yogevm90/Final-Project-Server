@@ -1,6 +1,6 @@
 import pytest
 
-from Server.database_manager.authentication_manager.authentication_manager import AuthenticationManager
+from server.database_manager.authentication_manager.authentication_manager import AuthenticationManager
 from tests.server.database_manager import pre_test
 
 

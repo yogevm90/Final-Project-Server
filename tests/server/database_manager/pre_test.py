@@ -1,7 +1,7 @@
 import pymongo
 
-from Server.database_manager.authentication_manager.authentication_manager import AuthenticationManager
-from Server.database_manager.data_manager.database_data_manager import DatabaseDataManager
+from server.database_manager.authentication_manager.authentication_manager import AuthenticationManager
+from server.database_manager.data_manager.database_data_manager import DatabaseDataManager
 
 
 def database_manager():

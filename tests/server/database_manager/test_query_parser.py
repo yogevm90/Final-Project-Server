@@ -1,13 +1,15 @@
+from unittest.mock import MagicMock
+
 import pytest
 
-from Server.database_manager.exception_types import InvalidRequestException, WrongPasswordException
-from Server.database_manager.query_manager.query_parser import QueryParser
+from server.database_manager.exception_types import InvalidRequestException, WrongPasswordException
+from server.database_manager.query_manager.query_parser import QueryValidator
 from tests.server.database_manager import pre_test
 
 
 @pytest.fixture(scope='session', autouse=True)
 def query_parser():
-    return QueryParser(pre_test.database_manager())
+    return QueryValidator(pre_test.database_manager(), MagicMock())
 
 
 def test_validate_query(query_parser):

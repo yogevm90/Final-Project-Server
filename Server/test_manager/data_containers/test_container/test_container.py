@@ -58,7 +58,8 @@ class TestContainer(Serializable, Jsonable):
         for test_pickle_path in self._tests_dict.values():
             self._mutex.acquire()
             with open(test_pickle_path, "rb") as test_pickle_file:
-                self._tests += [pickle.load(test_pickle_file)]
+                deserialized_test = pickle.load(test_pickle_file)
+                self._tests[deserialized_test.TestId] = deserialized_test
             self._mutex.release()
 
     def _serialize_json(self):

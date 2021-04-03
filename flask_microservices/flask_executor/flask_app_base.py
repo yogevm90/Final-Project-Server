@@ -1,15 +1,20 @@
 import argparse
 import json
 import sys
+from abc import ABC, abstractmethod
 
 from flask import Flask
 
 from utilities.custom_importer.custom_importer import CustomImporter
 
 
-class FlaskAppBase(Flask):
+class FlaskAppBase(Flask, ABC):
     def __init__(self, import_name, *args, **kwargs):
         super().__init__(import_name, *args, **kwargs)
+
+    @abstractmethod
+    def _setup(self, *args, **kwargs):
+        pass
 
 
 if __name__ == '__main__':
