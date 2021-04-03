@@ -2,11 +2,13 @@ import os
 import uuid
 from typing import Dict
 
-from flask import request, render_template
+from flask import request, render_template, make_response, jsonify
 from werkzeug.useragents import UserAgentParser
 
 from flask_microservices.flask_executor.flask_app_base import FlaskAppBase
 from flask_microservices.test_microservice.test_user_agent_validator import TestUserAgentValidator
+from server.test_manager.data_containers.test import Test
+from server.test_manager.data_containers.test_container.test_container import TestContainer
 
 
 class TestApp(FlaskAppBase):
@@ -24,6 +26,7 @@ class TestApp(FlaskAppBase):
             "verification_id": str(1),
             "remaining_tries": 3
         }
+        self._test_container = TestContainer()
 
     def actual_start_test(self):
         data = request.get_json()
@@ -64,6 +67,11 @@ class TestApp(FlaskAppBase):
             if test_id in self._user_redirects:
                 return render_template("verify_the_student.html",
                                        test_id=test_id)
+
+        @self.route("/AddTest", methods=["POST"])
+        def add_test():
+            self._test_container.add_test(Test().from_json(request.get_json()))
+            return jsonify({"status": "done"})
 
     @classmethod
     def _get_test_id(cls, data: Dict):

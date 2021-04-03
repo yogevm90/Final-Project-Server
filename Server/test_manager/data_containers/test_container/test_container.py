@@ -15,12 +15,14 @@ class TestContainer(Serializable, Jsonable):
     _tests: Dict[str, Test]
     _mutex: Lock
 
-    def __init__(self):
+    def __init__(self, deserialize=False):
         self._tests_json_path = os.path.join(os.path.dirname(__file__), "tests.json")
         self._mutex = Lock()
         with open(self._tests_json_path, "r") as tests_json:
             self._tests_dict = json.load(tests_json)
         self._tests = {}
+        if deserialize:
+            self.deserialize()
 
     @property
     def Tests(self):
@@ -42,11 +44,11 @@ class TestContainer(Serializable, Jsonable):
         for test in tests:
             self.add_test(test)
 
-    def get_test_by_id(self, id: str):
-        return
+    def get_test_by_id(self, test_id: str):
+        return self._tests[test_id]
 
     def serialize(self):
-        for test in self._tests:
+        for test in self._tests.values():
             self._mutex.acquire()
             test.serialize()
             self._mutex.release()
@@ -65,5 +67,5 @@ class TestContainer(Serializable, Jsonable):
 
     def json(self):
         return {
-            "tests": [t.json() for t in self._tests]
+            "tests": [t.json() for t in self._tests.values()]
         }

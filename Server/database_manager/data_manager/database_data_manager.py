@@ -76,8 +76,8 @@ class DatabaseDataManager(object):
             return False
         user_query = {'name': class_name, 'participants': {'$all': [username]}}
         teacher_query = {'name': class_name, 'teacher': username}
-        return self._classes_collection.find(user_query).count() == 1 \
-               or self._classes_collection.find(teacher_query).count() == 1
+        return (self._classes_collection.find(user_query).count() == 1 or
+                self._classes_collection.find(teacher_query).count() == 1)
 
     def is_teacher(self, username, class_name):
         if not self.class_exists(class_name):
