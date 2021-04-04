@@ -44,7 +44,7 @@ if __name__ == '__main__':
     app_import = CustomImporter.import_object({"name": args.import_name, "module": args.flask_app})
     kwargs = json.loads(args.microservices_kwargs.replace("'", "\""))
     if args.microservices_args:
-        app = app_import(import_name=args.flask_app, *args.microservices_args, **kwargs)
+        app = app_import(import_name=args.flask_app,  *args.microservices_args, **kwargs)
     else:
         app = app_import(import_name=args.flask_app, **kwargs)
 

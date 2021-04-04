@@ -16,7 +16,7 @@ class TestApp(FlaskAppBase):
     def __init__(self, import_name="TestApp", main_server_port=-1, server_ip=None, **kwargs):
         root_path = os.path.dirname(__file__)
         os.chdir(root_path)
-        super().__init__(import_name, root_path=root_path, **kwargs)
+        super().__init__(import_name, root_path=root_path, logs_name="bla.txt", **kwargs)
         self._user_redirects = {}
         self._main_server_port = main_server_port
         self._server_ip = server_ip

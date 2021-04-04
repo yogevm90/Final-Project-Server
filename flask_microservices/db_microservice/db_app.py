@@ -24,11 +24,9 @@ class DBApp(FlaskAppBase):
             print(student_to_add_json)
 
     def student_by_id(self, student_id):
-        print(1)
         return student_id
 
     def student_by_name(self, student_id):
-        print(2)
         return student_id
 
 

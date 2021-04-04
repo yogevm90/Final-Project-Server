@@ -16,8 +16,11 @@ class ClassroomConfig(Jsonable):
     _teacher: User
     _students: List[User]
 
+    SPECIAL_LIST_SEP = ","
+
     def __init__(self, classroom_id: str, user_ids: List[str], start: str, end: str,
-                 day: int, teacher: User, students: List[User]):
+                 day: int, teacher: User, students: List[User], homework_links: str,
+                 external_links: str, class_updates: str):
         self._classroom_id = classroom_id
         self._user_ids = user_ids
         self._start = start
@@ -25,6 +28,9 @@ class ClassroomConfig(Jsonable):
         self._day = day
         self._teacher = teacher
         self._students = students
+        self._homework_links = homework_links.split(ClassroomConfig.SPECIAL_LIST_SEP)
+        self._external_links = external_links.split(ClassroomConfig.SPECIAL_LIST_SEP)
+        self._class_updates = class_updates.split(ClassroomConfig.SPECIAL_LIST_SEP)
         self._mutex = Lock()
 
     @property
