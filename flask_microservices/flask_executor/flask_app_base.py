@@ -1,15 +1,16 @@
 import argparse
 import json
-import sys
 from abc import ABC, abstractmethod
 
 from flask import Flask
 
 from utilities.custom_importer.custom_importer import CustomImporter
+from utilities.logging.scholapp_server_logger import ScholappLogger
 
 
 class FlaskAppBase(Flask, ABC):
-    def __init__(self, import_name, *args, **kwargs):
+    def __init__(self, import_name, logs_name, *args, **kwargs):
+        ScholappLogger.init_logger(logs_name)
         super().__init__(import_name, *args, **kwargs)
 
     @abstractmethod

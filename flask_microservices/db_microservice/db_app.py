@@ -4,8 +4,8 @@ from flask_microservices.flask_executor.flask_app_base import FlaskAppBase
 
 
 class DBApp(FlaskAppBase):
-    def __init__(self, import_name="DBApp"):
-        super().__init__(import_name)
+    def __init__(self, import_name="DBApp", **kwargs):
+        super().__init__(import_name, **kwargs)
         self._student_methods = {
             "ById": self.student_by_id,
             "ByName": self.student_by_name

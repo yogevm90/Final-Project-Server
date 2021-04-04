@@ -3,8 +3,10 @@ from pymongo.collection import Collection
 
 from server.database_manager.exception_types import InvalidRequestException
 from server.database_manager.authentication_manager import authentication_manager
+from utilities.decorators.singleton import singleton
 
 
+@singleton
 class DatabaseDataManager(object):
     _users_collection: Collection
     _classes_collection: Collection
