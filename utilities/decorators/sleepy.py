@@ -15,7 +15,8 @@ class Sleepy(object):
 
         self._func(*args, **kwargs)
 
-        elapsed = time() - start
+        end = time()
+        elapsed = end - start
 
         if elapsed > self._timeout:
             self._total_heavy_timed_tasks += [elapsed]
