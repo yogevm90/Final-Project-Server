@@ -10,6 +10,13 @@ class DBApp(FlaskAppBase):
             "ById": self.student_by_id,
             "ByName": self.student_by_name
         }
+        self._details_methods = {
+            "username": self.student_by_id,
+            "new_password": self.student_by_name,
+            "name": self.student_by_name,
+            "surname": self.student_by_name,
+            "class": self.student_by_name
+        }
         self._setup()
 
     def _setup(self):
@@ -18,10 +25,13 @@ class DBApp(FlaskAppBase):
             get_student_by_data = self._student_methods[method]
             return get_student_by_data(student_data)
 
-        @self.route("/PostStudent")
-        def post_student(method, student_data):
-            student_to_add_json = flask.request.get_json()
-            print(student_to_add_json)
+        @self.route("/Register")
+        def register():
+            pass
+
+        @self.route("/ChangePassword")
+        def change_pass():
+            pass
 
     def student_by_id(self, student_id):
         return student_id

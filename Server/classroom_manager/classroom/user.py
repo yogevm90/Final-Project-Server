@@ -2,7 +2,7 @@ from server.classroom_manager.classroom.user_connection_details import UserConne
 from server.interfaces.jsonable import Jsonable
 
 
-class   User(Jsonable):
+class User(Jsonable):
     _id: str
     _name: str
     _surname: str

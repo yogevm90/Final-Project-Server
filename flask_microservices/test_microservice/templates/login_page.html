@@ -1,0 +1,26 @@
+{% extends "base_page.html" %}
+{% block head %}
+  {{ super() }}
+<script src="{{ url_for('static', filename='common.js') }}"></script>
+{% endblock %}
+{% block card_header %} Verify Test Enter {% endblock %}
+{% block card_body %}
+<div>
+    <h1>
+        Login To The Test
+    </h1>
+        <div class="form-group my-3">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" aria-describedby="emailHelp"
+                   placeholder="Enter username">
+            <small id="emailHelp" class="form-text text-muted">Please enter your username.</small>
+        </div>
+        <div class="form-group my-3">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="Password">
+        </div>
+    <button onclick="SetValueToSubmit('Login', 'username', 'password', false)"
+            class="btn btn-primary my-3">
+        Submit</button>
+</div>
+{% endblock %}

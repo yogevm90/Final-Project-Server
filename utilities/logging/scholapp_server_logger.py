@@ -28,8 +28,20 @@ class ScholappLogger(object):
         return logs_path
 
     @staticmethod
-    def info(*args, **kwargs):
-        return ScholappLogger._LOGGER.info(*args, **kwargs)
+    def info(msg, *args, **kwargs):
+        return ScholappLogger._LOGGER.info(msg, *args, **kwargs)
+
+    @staticmethod
+    def debug(msg, *args, **kwargs):
+        return ScholappLogger._LOGGER.debug(msg, *args, **kwargs)
+
+    @staticmethod
+    def error(msg, *args, **kwargs):
+        return ScholappLogger._LOGGER.error(msg, *args, **kwargs)
+
+    @staticmethod
+    def warning(msg, *args, **kwargs):
+        return ScholappLogger._LOGGER.warning(msg, *args, **kwargs)
 
     @staticmethod
     def _get_logs_path(cwd) -> Path:

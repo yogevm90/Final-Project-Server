@@ -8,6 +8,7 @@ from flask_microservices.flask_executor.flask_app_base import FlaskAppBase
 from flask_microservices.test_microservice.test_user_agent_validator import TestUserAgentValidator
 from server.test_manager.data_containers.test import Test
 from server.test_manager.data_containers.test_container.test_container import TestContainer
+from utilities.logging.scholapp_server_logger import ScholappLogger
 
 
 class TestApp(FlaskAppBase):
@@ -16,7 +17,7 @@ class TestApp(FlaskAppBase):
     def __init__(self, import_name="TestApp", main_server_port=-1, server_ip=None, **kwargs):
         root_path = os.path.dirname(__file__)
         os.chdir(root_path)
-        super().__init__(import_name, root_path=root_path, logs_name="bla.txt", **kwargs)
+        super().__init__(import_name, root_path=root_path, **kwargs)
         self._user_redirects = {}
         self._main_server_port = main_server_port
         self._server_ip = server_ip
@@ -24,6 +25,21 @@ class TestApp(FlaskAppBase):
         self._test_container = TestContainer()
 
     def _setup(self):
+        @self.route("/", methods=["GET"])
+        def login_page():
+            return TestApp._login_page()
+
+        @self.route("/GetTest/<test_id>", methods=["GET"])
+        def get_test_by_id(test_id):
+            # :TODO verify via rest
+            return flask.jsonify({"test_id": self._test_container.Tests[test_id]})
+
+        @self.route("/Login/<user>/<password>", methods=["GET"])
+        def login(user, password):
+            # :TODO verify via rest
+            ScholappLogger.info(f"User: {user} - tries to login")
+            return self.actual_login(user, password)
+
         @self.route("/StartTest", methods=["GET"])
         def start_test():
             return self.actual_start_test()
@@ -117,3 +133,11 @@ class TestApp(FlaskAppBase):
     def actual_add_test(self):
         self._test_container.add_test(Test().from_json(flask.request.get_json()))
         return flask.jsonify({"status": "done"})
+
+    def actual_login(self, user, password):
+        pass
+
+    @staticmethod
+    def _login_page():
+        return flask.render_template("login_page.html",
+                                     text_center=False)
