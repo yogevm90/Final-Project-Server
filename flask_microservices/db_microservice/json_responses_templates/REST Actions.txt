@@ -1,6 +1,6 @@
 Login:
 
-GET
+POST
 
 Request:
 /Login - {
@@ -61,7 +61,6 @@ List:
 }
 
 
-POST
 
 Request:
 /Register -
