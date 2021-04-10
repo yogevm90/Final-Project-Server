@@ -20,7 +20,7 @@ class ScholappLogger(object):
         ScholappLogger._LOGGER.setLevel(logging.DEBUG)
         ch = logging.StreamHandler()
         ch.setLevel(logging.DEBUG)
-        formatter = logging.Formatter("[%(asctime)s] [Scholapp Server] [Process: %(process)d] [%(name)s] "
+        formatter = logging.Formatter("[%(asctime)s] [Scholapp server] [Process: %(process)d] [%(name)s] "
                                       "- %(levelname)s - %(message)s", datefmt="%d-%b-%y %H:%M:%S")
         ch.setFormatter(formatter)
         fh.setFormatter(formatter)
