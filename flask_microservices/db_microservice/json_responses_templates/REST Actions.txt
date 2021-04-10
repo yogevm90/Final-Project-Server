@@ -94,13 +94,16 @@ Request:
 /CreateClass - {
     "username": "VAL1",
     "password": "VAL2",
-    "description": "VAL3",
+    "teacher_name": "VAL3",
+    "img_path": "VAL4",
+    "class_name": "VAL5",
+    "description": "VAL6",
     "external_links": LIST,
     "homework_links": LIST,
     "tests_ids": LIST[ID],
     "participants": LIST[ID],
-    "start": "VAL4",
-    "end": "VAL5",
+    "start": "VAL7",
+    "end": "VAL8",
     "day": [NUM between 1 - 7]
 }
 Response:
