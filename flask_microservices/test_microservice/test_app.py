@@ -15,14 +15,15 @@ class TestApp(FlaskAppBase):
     _user_redirects: Dict[str, Dict[str, object]]
 
     def __init__(self, import_name="TestApp", main_server_port=-1, server_ip=None, **kwargs):
-        root_path = os.path.dirname(__file__)
-        os.chdir(root_path)
-        super().__init__(import_name, root_path=root_path, **kwargs)
+        super().__init__(import_name, **kwargs)
+        super()._chdir(__file__)
+        ScholappLogger.info(f"Setting up {import_name}")
         self._user_redirects = {}
         self._main_server_port = main_server_port
         self._server_ip = server_ip
         self._setup()
         self._test_container = TestContainer()
+        ScholappLogger.info(f"Setting up was successful")
 
     def _setup(self):
         @self.route("/", methods=["GET"])

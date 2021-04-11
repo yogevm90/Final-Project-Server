@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 from abc import ABC, abstractmethod
 
 from flask import Flask
@@ -16,6 +17,11 @@ class FlaskAppBase(Flask, ABC):
     @abstractmethod
     def _setup(self, *args, **kwargs):
         pass
+
+    @staticmethod
+    def _chdir(file):
+        root_path = os.path.dirname(file)
+        os.chdir(root_path)
 
 
 if __name__ == '__main__':

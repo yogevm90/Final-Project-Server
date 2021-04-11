@@ -1,11 +1,15 @@
+import os
+
 import flask
 
 from flask_microservices.flask_executor.flask_app_base import FlaskAppBase
+from utilities.logging.scholapp_server_logger import ScholappLogger
 
 
 class DBApp(FlaskAppBase):
     def __init__(self, import_name="DBApp", **kwargs):
         super().__init__(import_name, **kwargs)
+        super()._chdir(__file__)
         self._student_methods = {
             "ById": self.student_by_id,
             "ByName": self.student_by_name
@@ -17,7 +21,9 @@ class DBApp(FlaskAppBase):
             "surname": self.student_by_name,
             "class": self.student_by_name
         }
+        ScholappLogger.info(f"Setting up {import_name}")
         self._setup()
+        ScholappLogger.info(f"Setting up was successful")
 
     def _setup(self):
         @self.route("/GetStudent/<method>/<student_data>")

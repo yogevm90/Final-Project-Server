@@ -22,6 +22,15 @@
       "kwargs": {
         "logs_name": "${_logs_path}/DBApp_logs.txt"
       }
+    },
+    "ImageApp": {
+      "module": "flask_microservices.image_saver_microservice.image_saver_app",
+      "name": "ImageApp",
+      "port": 5002,
+      "args": [],
+      "kwargs": {
+        "logs_name": "${_logs_path}/ImageApp_logs.txt"
+      }
     }
   }
 }
