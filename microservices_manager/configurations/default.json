@@ -10,7 +10,6 @@
       "port": 5000,
       "args": [],
       "kwargs": {
-        "server_ip": "127.0.0.1",
         "logs_name": "${_logs_path}/TestApp_logs.txt"
       }
     },

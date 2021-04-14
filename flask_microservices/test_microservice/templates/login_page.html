@@ -9,18 +9,31 @@
     <h1>
         Login To The Test
     </h1>
+
+    <form action="/Login" method="POST">
         <div class="form-group my-3">
             <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" aria-describedby="emailHelp"
-                   placeholder="Enter username">
-            <small id="emailHelp" class="form-text text-muted">Please enter your username.</small>
+            <input name="username" type="text" class="form-control" id="username" aria-describedby="emailHelp"
+                   placeholder="Enter username" disabled>
+            <small id="usernameHelp" class="form-text text-muted">Please enter your username.</small>
         </div>
         <div class="form-group my-3">
             <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" placeholder="Password">
+            <input name="password" type="password" class="form-control" id="password" placeholder="Password" disabled>
         </div>
-    <button onclick="SetValueToSubmit('Login', 'username', 'password', false)"
-            class="btn btn-primary my-3">
-        Submit</button>
+
+        <h5>Insert the test's ID and generate a key for the test first</h5>
+        <div class="form-group my-3">
+            <label for="testId">Test ID</label>
+            <input name="testId" type="text" class="form-control" id="testId" placeholder="Test ID">
+        </div>
+        <div class="form-group my-3">
+            <label for="testKey">Key For Test</label>
+            <input name="testKey" type="text" class="form-control" id="testKey" placeholder="Test Key">
+        </div>
+        <button id="loginButton" type="submit" class="btn btn-primary my-1" disabled> Login </button>
+    </form>
+    <button class="btn btn-secondary" onclick="KeyDetails()"> Generate Key </button>
+
 </div>
 {% endblock %}

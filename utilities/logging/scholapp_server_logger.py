@@ -15,15 +15,16 @@ class ScholappLogger(object):
             today = datetime.today().strftime("%d-%m-%Y_%H-%M-%S")
             logs_path = logs_path / today
             logs_path.mkdir()
-        fh = logging.FileHandler(str(logs_path / logs_name))
-        fh.setLevel(logging.DEBUG)
-        ScholappLogger._LOGGER.setLevel(logging.DEBUG)
+        fh0 = logging.FileHandler(str(logs_path / logs_name))
+        fh0.setLevel(logging.DEBUG)
+        ScholappLogger._LOGGER.setLevel(logging.INFO)
         ch = logging.StreamHandler()
         ch.setLevel(logging.DEBUG)
         formatter = logging.Formatter("[%(asctime)s] [Scholapp server] [Process: %(process)d] [%(name)s] "
                                       "- %(levelname)s - %(message)s", datefmt="%d-%b-%y %H:%M:%S")
         ch.setFormatter(formatter)
-        fh.setFormatter(formatter)
+        fh0.setFormatter(formatter)
+        ScholappLogger._LOGGER.addHandler(fh0)
         ScholappLogger._LOGGER.addHandler(ch)
         return logs_path
 

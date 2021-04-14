@@ -25,7 +25,7 @@ class TestContainer(Serializable, Jsonable):
             self.deserialize()
 
     @property
-    def Tests(self):
+    def Tests(self) -> Dict[str, Test]:
         return self._tests
 
     def set_tests_json_path(self, path):

@@ -7,6 +7,8 @@ from flask_cors import CORS
 from flask_microservices.flask_executor.flask_app_base import FlaskAppBase
 from utilities.logging.scholapp_server_logger import ScholappLogger
 
+DEFAULT = "default"
+
 
 class ImageApp(FlaskAppBase):
     def __init__(self, import_name="ImageApp", **kwargs):
@@ -19,7 +21,7 @@ class ImageApp(FlaskAppBase):
         ScholappLogger.info(f"Setting up was successful")
 
     def _setup(self):
-        static_files = [p.stem for p in Path("static").iterdir()]
+        static_files = [p.stem for p in Path("static").iterdir() if p.stem != DEFAULT]
         if static_files:
             static_files.sort()
             self._img_counter = int(static_files[-1])

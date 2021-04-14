@@ -8,6 +8,7 @@ from typing import List, Dict
 from server.interfaces.jsonable import Jsonable
 from server.test_manager.data_containers.interfaces.serializable import Serializable
 from server.test_manager.data_containers.question import Question
+from utilities.logging.scholapp_server_logger import ScholappLogger
 
 
 class Test(Serializable, Jsonable):
@@ -69,6 +70,8 @@ class Test(Serializable, Jsonable):
         return Path(os.path.join(os.path.dirname(__file__), "pickled_tests", f"{self._test_id}.bin"))
 
     def from_json(self, json_val: Dict):
+        if len(json_val["questions"]) == 0:
+            raise Exception("The questions cannot be an empty list!!!")
         self._questions = [Question().from_json(q) for q in json_val["questions"]]
         self._classroom = json_val["classroom"]
         self._teacher = json_val["teacher"]
