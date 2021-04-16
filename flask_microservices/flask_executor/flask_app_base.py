@@ -10,17 +10,36 @@ from utilities.logging.scholapp_server_logger import ScholappLogger
 
 
 class FlaskAppBase(Flask, ABC):
+    """
+    Base class for a Flask microservice
+    """
+
     def __init__(self, import_name, logs_name, *args, **kwargs):
+        """
+        :param import_name: import name
+        :param logs_name: logs file path
+        :param args: any arguments
+        :param kwargs: any dictionary arguments
+        """
         ScholappLogger.init_logger(logs_name)
         super().__init__(import_name, *args, **kwargs)
 
     @abstractmethod
     def _setup(self, *args, **kwargs):
+        """
+        :param args: arguments for setting up the microservice
+        :param kwargs: dictionary arguments for setting up the microservice
+        """
         pass
 
     @staticmethod
-    def _chdir(file):
-        root_path = os.path.dirname(file)
+    def _chdir(dir_path):
+        """
+        Enter the directory of the microservice
+
+        :param dir_path: path of the directory to enter
+        """
+        root_path = os.path.dirname(dir_path)
         os.chdir(root_path)
 
 

@@ -7,13 +7,23 @@ from interfaces.runner_interface import RunnerInterface
 
 
 class FlaskRunner(RunnerInterface):
+    """
+    A class for executing a microservice app
+    """
+
     _app: Dict
     _flask_app_base: str
     _port: int
     _python_executable: str
     _process: subprocess.Popen
 
-    def __init__(self, app, port, microservice_args, microservice_kwargs):
+    def __init__(self, app: Dict, port: int, microservice_args, microservice_kwargs):
+        """
+        :param app: Flask app
+        :param port: port to run in
+        :param microservice_args: any arguments needed
+        :param microservice_kwargs: any dict arguments needed
+        """
         self._app = app
         self._kwargs = microservice_kwargs
         self._args = microservice_args
@@ -23,6 +33,9 @@ class FlaskRunner(RunnerInterface):
         self._process = None
 
     def run(self):
+        """
+        Run the microservice
+        """
         cmd = f"\"{self._python_executable}\" \"{self._flask_app_base}\" " \
               f"-a {self._app['module']} " \
               f"-p {self._port} " \
@@ -36,4 +49,7 @@ class FlaskRunner(RunnerInterface):
         self._process = process
 
     def stop(self):
+        """
+        Stop the microservice
+        """
         self._process.terminate()

@@ -20,11 +20,13 @@ class TestApp(FlaskAppBase):
     """
     Microservice for test mode
     """
+
     _user_redirects: Dict[str, Dict[str, object]]
 
     def __init__(self, import_name: str = "TestApp", **kwargs):
         """
         :param import_name: Name of the app
+        :param kwargs: dict with any arguments needed
         """
         super().__init__(import_name, **kwargs)
         super()._chdir(__file__)
@@ -43,6 +45,18 @@ class TestApp(FlaskAppBase):
         ScholappLogger.info(f"Setting up was successful")
 
     def run(self, host=None, port=None, debug=None, load_dotenv=True, **options):
+        """
+        Flask run method
+
+        :param host: host to run on
+        :param port: port to run on
+        :param debug: if given, enable or disable debug mode
+        :param load_dotenv: Load the nearest :file:`.env` and :file:`.flaskenv`
+            files to set environment variables. Will also change the working
+            directory to the directory containing the first file found
+        :param options: the options to be forwarded to the underlying Werkzeug
+            server.
+        """
         self._port = port
         super().run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
 
@@ -259,6 +273,14 @@ class TestApp(FlaskAppBase):
         return result
 
     def actual_verify_your_test(self, test_id: str, username: str):
+        """
+        Return verification page to verify student
+
+        :param test_id: test id
+        :param username: username
+        :return: rendered "verify_the_student.html" in case of successful verification and "verification_page.html"
+                O.W.
+        """
         if username in self._user_redirects and test_id == self._user_redirects[username]["test_id"]:
             return flask.render_template("verify_the_student.html",
                                          test_id=test_id)

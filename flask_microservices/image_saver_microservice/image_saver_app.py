@@ -11,7 +11,15 @@ DEFAULT = "default"
 
 
 class ImageApp(FlaskAppBase):
+    """
+    A class for a microservice to save images
+    """
+
     def __init__(self, import_name="ImageApp", **kwargs):
+        """
+        :param import_name: import name
+        :param kwargs: any dict arguments needed
+        """
         super().__init__(import_name, **kwargs)
         super()._chdir(__file__)
         self._img_counter = 1
@@ -21,6 +29,9 @@ class ImageApp(FlaskAppBase):
         ScholappLogger.info(f"Setting up was successful")
 
     def _setup(self):
+        """
+        Setup REST API routes
+        """
         static_files = [p.stem for p in Path("static").iterdir() if p.stem != DEFAULT]
         if static_files:
             static_files.sort()
@@ -28,10 +39,17 @@ class ImageApp(FlaskAppBase):
 
         @self.route("/UploadImage", methods=["POST", "PUT"])
         def save_img():
+            """
+            Save an image
+            :return: json for the path that the image was saved to
+            """
             return self._save_img(flask.request.data)
 
     @property
-    def ImgCounter(self):
+    def ImgCounter(self) -> int:
+        """
+        :return: Number of images saved
+        """
         return self._img_counter
 
     def _save_img(self, img_data):
