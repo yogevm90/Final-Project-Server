@@ -2,9 +2,10 @@ import socket
 import threading
 
 from bson.json_util import dumps
-from server.database_manager.exception_types import QueryException
+
 from server.database_manager.authentication_manager.authentication_manager import AuthenticationManager
 from server.database_manager.data_manager.database_data_manager import DatabaseDataManager
+from server.database_manager.exception_types import QueryException
 from server.database_manager.interfaces.query_listener_interface import QueryListenerInterface
 from server.database_manager.query_manager.query_executor import QueryExecutor
 from server.database_manager.query_manager.query_parser import QueryValidator

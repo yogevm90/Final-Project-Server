@@ -1,7 +1,3 @@
-import os
-
-import flask
-
 from flask_microservices.flask_executor.flask_app_base import FlaskAppBase
 from utilities.logging.scholapp_server_logger import ScholappLogger
 

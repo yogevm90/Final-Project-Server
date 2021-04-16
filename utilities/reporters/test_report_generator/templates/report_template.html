@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="d-flex justify-content-center">
+        <div class="card bg-light mb-3 d-flex justify-content-center" style="width: 60rem;">
+            <div class="card-header"><h1>Solution for user: {{ username }}, Test ID: {{ test_id }}</h1></div>
+            {% for question, answer in answers.items() %}
+            <div class="card text-white bg-success mb-3 mx-3 my-2" style="width: 58rem;">
+                <div class="card-header"><h2><b>Question</b>: {{ question }}</h2></div>
+                <div class="card-body">
+                    {% if "options_selected" in answer %}
+                    {% for op, selected in answer["options_selected"].items() %}
+                    <h4>
+                        {% if selected %}
+                        <b>{{op}}</b>: Selected
+                        {% else %}
+                        <b>{{op}}</b>: Not Selected
+                        {% endif %}
+                    </h4>
+                    {% endfor %}
+                    <h4><b>Explanation</b>: {{ answer["explanation"] }}</h4>
+                    {% else %}
+                    <h4>
+                        {{ answer }}
+                    </h4>
+                    {% endif %}
+                    <br>
+                </div>
+                {% if "options_selected" in answer %}
+                    <div class="card-footer">
+                      <small>Multiple Question</small>
+                    </div>
+                {% else %}
+                    <div class="card-footer">
+                      <small>Open Question</small>
+                    </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

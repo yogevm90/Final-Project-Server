@@ -1,7 +1,6 @@
 from time import sleep
 from typing import Dict
 
-
 from flask_microservices.exceptions.port_is_not_available_exception import PortIsNotAvailableException
 from flask_microservices.flask_executor.flask_runner import FlaskRunner
 from interfaces.microservice_runner_interface import MicroserviceRunnerInterface

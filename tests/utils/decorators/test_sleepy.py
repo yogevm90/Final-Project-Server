@@ -1,8 +1,7 @@
+from time import sleep
 from unittest import mock
 
 from utilities.decorators.sleepy import Sleepy
-
-from time import sleep
 
 
 def test_sleepy_sleep_called():

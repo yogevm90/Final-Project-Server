@@ -1,0 +1,23 @@
+import json
+import os
+from pathlib import Path
+
+from jinja2 import Environment, PackageLoader
+
+
+class TestReportGenerator(object):
+    def __init__(self):
+        self._template = Path(os.path.dirname(__file__)) / "templates" / "report_template.html"
+
+    def generate_report(self, source: Path, dest: str):
+        orig_cwd = os.getcwd()
+        os.chdir(os.path.dirname(__file__))
+        test_sol = json.loads(source.read_text())
+
+        env = Environment(loader=PackageLoader(TestReportGenerator.__module__, "templates"))
+        template = env.from_string(self._template.read_text())
+        with open(dest, "w") as dest_file:
+            dest_file.write(template.render(username=test_sol["username"],
+                                            test_id=test_sol["test_id"],
+                                            answers=test_sol["answers"]))
+        os.chdir(orig_cwd)

@@ -1,6 +1,8 @@
+import json
 import os
 import traceback
 import uuid
+from pathlib import Path
 from typing import Dict
 
 import flask
@@ -20,7 +22,7 @@ class TestApp(FlaskAppBase):
     """
     _user_redirects: Dict[str, Dict[str, object]]
 
-    def __init__(self, import_name="TestApp", **kwargs):
+    def __init__(self, import_name: str = "TestApp", **kwargs):
         """
         :param import_name: Name of the app
         """
@@ -33,6 +35,11 @@ class TestApp(FlaskAppBase):
         self._test_container = TestContainer()
         self._qr_code_generator = QRCodeCreator()
         self._port = -1
+        self._submitted_tests_dir = Path(os.path.dirname(__file__)) / "submitted_tests"
+
+        if not self._submitted_tests_dir.is_dir():
+            self._submitted_tests_dir.mkdir()
+
         ScholappLogger.info(f"Setting up was successful")
 
     def run(self, host=None, port=None, debug=None, load_dotenv=True, **options):
@@ -40,7 +47,7 @@ class TestApp(FlaskAppBase):
         super().run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
 
     def _setup(self):
-        @self.route("/", methods=["GET"])
+        @self.route("/")
         def login_page():
             """
             :return: Login page
@@ -57,8 +64,8 @@ class TestApp(FlaskAppBase):
             # :TODO verify via rest
             return self.actual_login()
 
-        @self.route("/StartTest/<test_id>/<username>", methods=["GET"])
-        def start_test(test_id, username):
+        @self.route("/StartTest/<test_id>/<username>")
+        def start_test(test_id: str, username: str):
             """
             Start the test page creation
 
@@ -75,31 +82,28 @@ class TestApp(FlaskAppBase):
             """
             return self.actual_create_key()
 
-        @self.route("/GetTest/<test_id>", methods=["GET"])
-        def get_test_by_id(test_id):
+        @self.route("/GetTest/<test_id>", methods=["POST"])
+        def get_test_by_id(test_id: str):
             """
             :param test_id: test id
             :return: the test found
             """
-            # :TODO verify via rest
-            return flask.jsonify({"test": self._test_container.Tests[test_id]})
+            self._verify_login_details(flask.request.get_json())
+            return flask.jsonify({"test": self._test_container.Tests[test_id].json()})
 
-        @self.route("/GetTestByClassId/<class_id>", methods=["GET"])
-        def get_test_by_class_id(class_id):
+        @self.route("/GetTestByClassId/<class_id>", methods=["POST"])
+        def get_test_by_class_id(class_id: str):
             """
             :param class_id class id
             :return: the tests found
             """
-            # :TODO verify via rest
-            found_test = None
+            self._verify_login_details(flask.request.get_json())
+            tests = []
             for test in self._test_container.Tests.values():
                 if test.Classroom == class_id:
-                    found_test = test
+                    tests += [test]
 
-            if found_test:
-                return flask.jsonify(found_test.json())
-            else:
-                return flask.make_response("failed"), 404
+            return flask.jsonify({"tests": tests})
 
         @self.route("/VerifyTest", methods=["POST"])
         def verify():
@@ -109,7 +113,7 @@ class TestApp(FlaskAppBase):
             return self.actual_verify(flask.request.form["username"], flask.request.form["checkId"])
 
         @self.route("/VerifyYourTest/<test_id>/<username>")
-        def verify_your_test(test_id, username):
+        def verify_your_test(test_id: str, username: str):
             """
             Verify the user for the test
 
@@ -124,19 +128,62 @@ class TestApp(FlaskAppBase):
         def add_test():
             """
             Add new test
+
             :return: success or failure
             """
+            self._verify_login_details(flask.request.get_json())
             return self.actual_add_test()
 
-        @self.route("/ShouldCheckPC/<test_id>/<username>", methods=["POST"])
-        def should_check_pc(test_id, username):
+        @self.route("/AddParticipant/<test_id>", methods=["POST"])
+        @cross_origin()
+        def add_participant(test_id: str):
+            """
+            Add new participant for the test
+
+            :return: success or failure
+            """
+            return self.actual_add_participant(test_id)
+
+        @self.route("/ShouldCheckPC/<test_id>", methods=["POST"])
+        def should_check_pc(test_id: str):
             """
             Check student's PC if needed
+
             :param test_id: as part of which test to check
-            :param username: username
             :return: True if it is needed
             """
-            return self.actual_should_check_pc(test_id, username)
+            return self.actual_should_check_pc(test_id)
+
+        @self.route("/MarkUserPCForCheck/<test_id>/<username>", methods=["POST"])
+        def mark_user_pc_for_check(test_id: str, username: str):
+            """
+            Mark student's PC if needed
+
+            :param test_id: as part of which test to check
+            :param username: user to mark
+            :return: True if succeeded
+            """
+            return self.actual_mark_user_pc_for_check(test_id, username)
+
+        @self.route("/IsUserOk/<test_id>/<username>", methods=["POST"])
+        def is_user_ok(test_id: str, username: str):
+            """
+            Mark student's PC if needed
+
+            :param test_id: as part of which test to check
+            :param username: user to mark
+            :return: True if succeeded
+            """
+            return self.actual_is_user_ok(test_id, username)
+
+        @self.route("/SubmitTest", methods=["POST"])
+        def submit_test():
+            """
+            Submit student's test
+
+            :return: True if succeeded
+            """
+            return self.actual_submit_test()
 
     @classmethod
     def _data_is_valid(cls, data):
@@ -145,7 +192,7 @@ class TestApp(FlaskAppBase):
     def _fail_test(self, username):
         self._user_redirects[username]["msg"] = "YOU FAILED THE TEST! \nGOOD LUCK!"
 
-    def actual_start_test(self, test_id, username):
+    def actual_start_test(self, test_id: str, username: str):
         """
         Create the start page
 
@@ -174,7 +221,13 @@ class TestApp(FlaskAppBase):
                                          failed=True,
                                          msg="")
 
-    def actual_verify(self, username, verification_id):
+    def actual_verify(self, username: str, verification_id: str):
+        """
+
+        :param username:
+        :param verification_id:
+        :return:
+        """
         failed = True
         if self._verification_is_successful(username, verification_id):
             failed = False
@@ -185,7 +238,7 @@ class TestApp(FlaskAppBase):
                                      failed=failed,
                                      msg=self._user_redirects[username]["msg"])
 
-    def _verification_is_successful(self, username, verification_id):
+    def _verification_is_successful(self, username: str, verification_id: str):
         result = True
         self._user_redirects[username]["msg"] = ""
 
@@ -205,7 +258,7 @@ class TestApp(FlaskAppBase):
 
         return result
 
-    def actual_verify_your_test(self, test_id, username):
+    def actual_verify_your_test(self, test_id: str, username: str):
         if username in self._user_redirects and test_id == self._user_redirects[username]["test_id"]:
             return flask.render_template("verify_the_student.html",
                                          test_id=test_id)
@@ -247,8 +300,15 @@ class TestApp(FlaskAppBase):
         return flask.render_template("login_page.html",
                                      text_center=False)
 
-    def actual_should_check_pc(self, test_id, username):
+    def actual_should_check_pc(self, test_id: str):
         login_details = flask.request.get_json()
+        self._verify_login_details(login_details)
+        username = login_details["username"]
+        test = self._test_container.get_test_by_id(test_id)
+        participant = test.Participants[username]
+        result = participant["should_check"]
+        participant["should_check"] = False
+        return result
 
     @classmethod
     def actual_create_key(cls):
@@ -262,3 +322,54 @@ class TestApp(FlaskAppBase):
             for key, val in data.items():
                 data_for_id += f":key:{key}:val:{val}:"
         return uuid.uuid5(uuid.NAMESPACE_DNS, data_for_id)
+
+    def actual_add_participant(self, test_id: str):
+        try:
+            login_details = flask.request.get_json()
+            self._verify_login_details(login_details)
+            username = login_details["username"]
+            test = self._test_container.get_test_by_id(test_id)
+            test.add_participant(username)
+            return flask.jsonify({"status": "success"})
+        except Exception:
+            return flask.jsonify({"status": "failure"})
+
+    def _verify_login_details(self, login_details):
+        pass
+
+    def actual_mark_user_pc_for_check(self, test_id, username):
+        try:
+            login_details = flask.request.get_json()
+            self._verify_login_details(login_details)
+            test = self._test_container.get_test_by_id(test_id)
+            test[username]["should_check"] = True
+            return flask.jsonify({"status": "success"})
+        except Exception:
+            return flask.jsonify({"status": "failure"})
+
+    def actual_is_user_ok(self, test_id, username):
+        try:
+            login_details = flask.request.get_json()
+            self._verify_login_details(login_details)
+            test = self._test_container.get_test_by_id(test_id)
+            test[username]["should_check"] = True
+            return flask.jsonify({"is_ok": test[username]["is_ok"], "status": "success"})
+        except Exception:
+            return flask.jsonify({"status": "failure"})
+
+    def actual_submit_test(self):
+        try:
+            submitted_test = flask.request.get_json()
+            self._verify_login_details(submitted_test)
+            test_submit_folder = self._submitted_tests_dir / submitted_test["test_id"]
+            if not test_submit_folder.is_dir():
+                test_submit_folder.mkdir()
+
+            # We delete before saving
+            del submitted_test["password"]
+            student_submit_file = test_submit_folder / f"{submitted_test['username']}.json"
+            with open(student_submit_file, "w") as student_submit_file_open:
+                student_submit_file_open.write(json.dumps(submitted_test, sort_keys=True, indent=4))
+            return flask.jsonify({"status": "success"})
+        except Exception:
+            return flask.jsonify({"status": "failure"})

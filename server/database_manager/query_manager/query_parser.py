@@ -1,9 +1,9 @@
 import json
 from json import JSONDecodeError
 
+from server.database_manager.authentication_manager.authentication_manager import AuthenticationManager
 from server.database_manager.data_manager.database_data_manager import DatabaseDataManager
 from server.database_manager.exception_types import InvalidRequestException, WrongPasswordException
-from server.database_manager.authentication_manager.authentication_manager import AuthenticationManager
 from server.database_manager.interfaces.query_validator_interface import QueryValidatorInterface
 
 valid_request_types = ['get', 'set']

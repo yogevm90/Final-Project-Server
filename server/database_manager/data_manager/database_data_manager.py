@@ -1,8 +1,8 @@
 import pymongo
 from pymongo.collection import Collection
 
-from server.database_manager.exception_types import InvalidRequestException
 from server.database_manager.authentication_manager import authentication_manager
+from server.database_manager.exception_types import InvalidRequestException
 from utilities.decorators.singleton import singleton
 
 
