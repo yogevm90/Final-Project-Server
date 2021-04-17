@@ -6,10 +6,19 @@ from jinja2 import Environment, PackageLoader
 
 
 class TestReportGenerator(object):
+    """
+    Class for generating a test report html
+    """
     def __init__(self):
         self._template = Path(os.path.dirname(__file__)) / "templates" / "report_template.html"
 
     def generate_report(self, source: Path, dest: str):
+        """
+        Generate a report by a JSON in source and into dest
+
+        :param source: test summary JSON
+        :param dest: destination for the report
+        """
         orig_cwd = os.getcwd()
         os.chdir(os.path.dirname(__file__))
         test_sol = json.loads(source.read_text())

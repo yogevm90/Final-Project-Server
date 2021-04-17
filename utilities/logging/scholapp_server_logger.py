@@ -5,10 +5,21 @@ from pathlib import Path
 
 
 class ScholappLogger(object):
+    """
+    A class to represent the logging mechanism
+    """
+
     _LOGGER = logging.getLogger("Scholapp")
 
     @staticmethod
     def init_logger(logs_name, create_time_folder=False):
+        """
+        Initialize the logger
+
+        :param logs_name: path to logs path
+        :param create_time_folder: create a folder by time
+        :return: logs path
+        """
         import logging.config
         logs_path = ScholappLogger._get_logs_path(os.getcwd())
         if create_time_folder:
@@ -30,18 +41,46 @@ class ScholappLogger(object):
 
     @staticmethod
     def info(msg, *args, **kwargs):
+        """
+        Run logging's info
+        :param msg: msg to print
+        :param args: arguments
+        :param kwargs: kwargs
+        :return: result of info
+        """
         return ScholappLogger._LOGGER.info(msg, *args, **kwargs)
 
     @staticmethod
     def debug(msg, *args, **kwargs):
+        """
+        Run logging's debug
+        :param msg: msg to print
+        :param args: arguments
+        :param kwargs: kwargs
+        :return: result of debug
+        """
         return ScholappLogger._LOGGER.debug(msg, *args, **kwargs)
 
     @staticmethod
     def error(msg, *args, **kwargs):
+        """
+        Run logging's error
+        :param msg: msg to print
+        :param args: arguments
+        :param kwargs: kwargs
+        :return: result of error
+        """
         return ScholappLogger._LOGGER.error(msg, *args, **kwargs)
 
     @staticmethod
     def warning(msg, *args, **kwargs):
+        """
+        Run logging's warning
+        :param msg: msg to print
+        :param args: arguments
+        :param kwargs: kwargs
+        :return: result of warning
+        """
         return ScholappLogger._LOGGER.warning(msg, *args, **kwargs)
 
     @staticmethod

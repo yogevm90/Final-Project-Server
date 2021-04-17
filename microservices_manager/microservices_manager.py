@@ -9,6 +9,10 @@ from utilities.logging.scholapp_server_logger import ScholappLogger
 
 
 class MicroservicesManager(ManagerInterface):
+    """
+    A class for managing all microservices and starting them by a JSON configuration file
+    """
+
     _apps_config_file_path: str
     _apps_config_file_content: Dict
     _executor: MicroserviceRunnerInterface
@@ -26,6 +30,12 @@ class MicroservicesManager(ManagerInterface):
         }
 
     def manage(self, apps_config_file_path: str = "", apps_to_execute: Dict = None):
+        """
+        Start managing all microservices
+
+        :param apps_config_file_path: configuration file to start management by
+        :param apps_to_execute: dictionary for apps to execute
+        """
         if apps_config_file_path:
             self._apps_config_file_path = apps_config_file_path
 

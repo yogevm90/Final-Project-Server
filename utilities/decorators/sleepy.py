@@ -3,17 +3,28 @@ from time import time, sleep
 
 class Sleepy(object):
     """
-    Decorator
+    Decorator for executing a function in a predefined time
     """
     def __init__(self, function, timeout=5):
+        """
+        :param function: function to execute
+        :param timeout: time to execute function
+        """
         self._func = function
         self._timeout = timeout
         self._total_heavy_timed_tasks = [timeout]
 
     def __call__(self, *args, **kwargs):
+        """
+        Wrapper for running in specific time
+
+        :param args: arguments for execution
+        :param kwargs: kwargs for execution
+        :return: result of function if there is any
+        """
         start = time()
 
-        self._func(*args, **kwargs)
+        result = self._func(*args, **kwargs)
 
         end = time()
         elapsed = end - start
@@ -26,3 +37,5 @@ class Sleepy(object):
 
         if elapsed > 0:
             sleep(to_wait)
+
+        return result
