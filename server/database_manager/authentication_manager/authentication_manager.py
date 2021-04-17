@@ -1,6 +1,9 @@
+import traceback
+
 import bcrypt
 
 from server.database_manager.data_manager.database_data_manager import DatabaseDataManager
+from utilities.logging.scholapp_server_logger import ScholappLogger
 
 
 class AuthenticationManager(object):
@@ -51,4 +54,5 @@ class AuthenticationManager(object):
             if user_document['admin']:
                 return True
         except Exception:
+            ScholappLogger.error(traceback.format_exc())
             return False

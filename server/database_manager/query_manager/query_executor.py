@@ -1,8 +1,10 @@
+import traceback
 from typing import Dict
 
 from server.database_manager.data_manager.database_data_manager import DatabaseDataManager
 from server.database_manager.exception_types import OperationFailedException
 from server.database_manager.interfaces.query_executor_interface import QueryExecutorInterface
+from utilities.logging.scholapp_server_logger import ScholappLogger
 
 
 class QueryExecutor(QueryExecutorInterface):
@@ -34,7 +36,8 @@ class QueryExecutor(QueryExecutorInterface):
                     self._data_manager.update_class(request_object_name, document)
                 return self._get_request(request_location, request_object_name)
         except Exception as e:
-            raise OperationFailedException('Failed executing set request {}\n error: {}'.format(request, e))
+            ScholappLogger.error(traceback.format_exc())
+            raise OperationFailedException(f"Failed executing set request {request}\n error: {e}")
 
     def _get_request(self, request_location, request_object_name):
         try:
@@ -46,4 +49,5 @@ class QueryExecutor(QueryExecutorInterface):
                 class_document = self._data_manager.get_class_by_name(request_object_name)
                 return class_document
         except Exception as e:
-            raise OperationFailedException('Failed executing get request {}\n error: {}'.format(request_object_name, e))
+            ScholappLogger.error(traceback.format_exc())
+            raise OperationFailedException(f"Failed executing get request {request_object_name}\n error: {e}")
