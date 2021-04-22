@@ -1,0 +1,23 @@
+MongoDB Database:
+    Collection: "users"
+        Document: user
+            username: str
+            password: str
+            id: str
+            name: str
+            surname: str
+            role: "teacher" \ "student"
+            class: List["class_ids"]
+
+    Collection: "classes"
+        Document: class
+            name: str
+            teacher_name: str
+            description: str
+            external_links: List[str]
+            homework_links: List[str]
+            updates: List[str]
+            tests_ids: List["tests_ids"]
+            participants: List["students_username"]
+            time: str
+            img_path: str
