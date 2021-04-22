@@ -30,6 +30,15 @@
       "kwargs": {
         "logs_name": "${_logs_path}/ImageApp_logs.txt"
       }
+    },
+    "ChatApp": {
+      "module": "flask_microservices.chat_microservice.chat_app",
+      "name": "ChatApp",
+      "port": 5003,
+      "args": [],
+      "kwargs": {
+        "logs_name": "${_logs_path}/ChatApp_logs.txt"
+      }
     }
   }
 }
