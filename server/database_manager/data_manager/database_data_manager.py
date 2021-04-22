@@ -21,33 +21,46 @@ class DatabaseDataManager(object):
         query = {'username': username}
         return self._users_collection.find_one(query)
 
+    def get_user_by_id(self, user_id: str):
+        query = {'id': user_id}
+        return self._users_collection.find_one(query)
+
     def get_class_by_name(self, class_name: str):
         query = {'name': class_name}
         return self._classes_collection.find_one(query)
 
-    def insert_user(self, username: str, password: str, details):
-        if self.user_exists(username):
-            raise InvalidRequestException('Username {} already exists'.format(username))
-        hashed_password = authentication_manager.AuthenticationManager.get_hashed_password(password)
-        query = {'username': username, 'password': hashed_password, 'details': details}
+    def get_class_by_id(self, class_id: str):
+        query = {'id': class_id}
+        return self._classes_collection.find_one(query)
+
+    def get_classes_by_username(self, username: str):
+        user_doc = self.get_user_by_name(username)
+        return user_doc['classes']
+
+    def insert_user(self, user_data: dict):
+        if self.user_exists(user_data['username']):
+            raise InvalidRequestException('Username {} already exists'.format(user_data['username']))
+        hashed_password = authentication_manager.AuthenticationManager.get_hashed_password(user_data['password'])
+        query = user_data
+        query['password'] = hashed_password
         return self._users_collection.insert_one(query)
 
     def remove_user(self, username: str):
         query = {'username': username}
         self._users_collection.delete_one(query)
 
-    def insert_class(self, class_name, teacher_username, details, participants=None):
-        if self.class_exists(class_name):
-            raise InvalidRequestException('Class with the same name {} already exists'.format(class_name))
-        if not self.user_exists(teacher_username):
-            raise InvalidRequestException('Teacher user {} does not exist'.format(teacher_username))
-        query = {'name': class_name, 'teacher': teacher_username, 'details': details, 'participants': []}
-        if participants is not None:
-            for participant in participants:
+    def insert_class(self, class_data: dict):
+        if self.class_exists(class_data['class_name']):
+            raise InvalidRequestException('Class {} already exists'.format(class_data['class_name']))
+        if 'participants' in class_data:
+            for participant in class_data['participants']:
                 if not self.user_exists(participant):
                     raise InvalidRequestException('User does not exist: {}'.format(participant))
-            query['participants'] = participants
-        return self._classes_collection.insert_one(query)
+        if not self.user_exists(class_data['teacher']):
+            raise InvalidRequestException('Teacher user {} does not exist'.format(class_data['teacher']))
+        if not self.is_teacher(class_data['teacher']):
+            raise InvalidRequestException('User {} cannot be teacher'.format(class_data['teacher']))
+        self._classes_collection.insert_one(class_data)
 
     def add_participant(self, username, class_name):
         if not self.class_exists(class_name):
@@ -81,11 +94,11 @@ class DatabaseDataManager(object):
         return (self._classes_collection.find(user_query).count() == 1 or
                 self._classes_collection.find(teacher_query).count() == 1)
 
-    def is_teacher(self, username, class_name):
-        if not self.class_exists(class_name):
+    def is_teacher(self, username):
+        if not self.user_exists(username):
             return False
-        teacher_query = {'name': class_name, 'teacher': username}
-        return self._classes_collection.find(teacher_query).count() == 1
+        teacher_query = {'username': username, 'role': 'teacher'}
+        return self._users_collection.find(teacher_query).count() == 1
 
     def update_user(self, username, update_info):
         if not self.user_exists(username):

@@ -1,94 +1,145 @@
-Login:
-
 POST
 
 Request:
 /Login - {
-    "username": "VAL1",
-    "password": "VAL2"
-}
-Response:
-{} // Teacher or not
-
-Request:
-/Signout - {
-    "username": "VAL1",
-    "password": "VAL2"
-}
-Response:
-
-Request:
-/GetClasses - { // Only name, id, times, description
-    "username": "VAL1",
-    "password": "VAL2"
-}
-Response:
-
-
-Request:
-/GetClass/<class_id> - { // everything
-    "username": "VAL1",
-    "password": "VAL2",
-    "id": "VAL3"
-}
-Response:
-
-Request:
-/GetPathToSave - { // everything
-    "username": "VAL1",
-    "password": "VAL2",
-    "class_id": "VAL3"
+    "username": str,
+    "password": str
 }
 Response:
 {
-    "video": "VAL1",
-    "audio": "VAL2"
+    "verdict": bool
+    "role": "teacher"\"student"
 }
 
+Request:
+/Signout - {
+    "username": str,
+    "password": str
+}
+Response:
+{
+    "verdict": bool
+}
 
 Request:
-/GetClassroomPaths - { // everything
-    "username": "VAL1",
-    "password": "VAL2",
-    "class_id": "VAL3"
+/ChangePassword - {
+    "username": str
+    "password": str
+    "new_password": str
+}
+Response:
+{
+    "verdict": bool
+}
+
+Request:
+/GetClasses - {
+    "username": str,
+    "password": str
 }
 Response:
 List:
 {
-    "user_id": "VAL1",
-    "video": "VAL2",
-    "audio": "VAL3"
+    "name": str
+    "id": str
+    "description": str
+    "time": str
 }
 
+Request:
+/GetClass/<method>/<class_data> - {
+    "username": str,
+    "password": str,
+}
+"method": "ByName" \ "ById"
+class_data: str
+Response:
+{
+    "verdict": bool
+    "class_document": {}
+}
 
+Request:
+/SetClass/<method>/<class_data> - {
+    "username": str,
+    "password": str,
+    "details": {}
+}
+"method": "ByName" \ "ById"
+class_data: str
+Response:
+{
+    "verdict": bool
+    "class_document": {}
+}
+
+Request:
+/GetUser/<method>/<user_data> - {
+    "username": str,
+    "password": str,
+}
+"method": "ByName" \ "ById"
+user_data: str
+Response:
+{
+    "verdict": bool
+    "user_document": {}
+}
+
+Request:
+/SetUser/<method>/<user_data> - {
+    "username": str,
+    "password": str,
+    "details": {}
+}
+"method": "ByName" \ "ById"
+user_data: str
+Response:
+{
+    "verdict": bool
+    "user_document": {}
+}
+
+Request:
+/GetPathToSave - {
+    "username": str,
+    "password": str,
+    "class_id": str
+}
+Response:
+{
+    "video": str,
+    "audio": str
+}
+
+Request:
+/GetClassroomPaths - { // everything
+    "username": str,
+    "password": str,
+    "class_id": str
+}
+Response:
+List:
+{
+    "user_id": str,
+    "video": str,
+    "audio": str
+}
 
 Request:
 /Register -
 {
-    "username": "VAL1",
-    "password": "VAL2",
-    "name": "VAL3",
-    "surname": "VAL4",
+    "username": str,
+    "password": str,
+    "name": str,
+    "surname": str,
     "role": "student / teacher"
 }
 Response:
-
-
-Request:
-/Details - {
-    "username": "VAL1",
-    "password": "VAL2",
-    "type": "VAL3",
-    "data": {
-        "username": "VAL1",
-        "new_password": "VAL2",
-        "name": "VAL3",
-        "surname": "VAL4",
-        "class": {}
-    }
+{
+    "verdict": bool
+    "user_document": {}
 }
-Response:
-
 
 Request:
 /CreateClass - {
@@ -96,7 +147,7 @@ Request:
     "password": "VAL2",
     "teacher_name": "VAL3",
     "img_path": "VAL4",
-    "class_name": "VAL5",
+    "name": "VAL5",
     "description": "VAL6",
     "external_links": LIST,
     "homework_links": LIST,
@@ -108,3 +159,7 @@ Request:
     "day": [NUM between 1 - 7]
 }
 Response:
+{
+    "verdict": bool
+    "class_document": {}
+}
