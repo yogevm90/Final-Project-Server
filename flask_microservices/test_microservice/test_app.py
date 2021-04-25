@@ -211,6 +211,22 @@ class TestApp(FlaskAppBase):
             """
             return self.actual_submit_user_is_invalid(test_id, username)
 
+        @self.route("/GetUserIsVerified/<test_id>/<username>")
+        def user_is_valid(test_id, username):
+            """
+            Submit student is invalid
+
+            :param test_id: test id
+            :param username: username
+            :return: {"status": "success"} in case of success and {"status": "failure"} O.W.
+            """
+            if username in self._user_redirects:
+                if "verified" in self._user_redirects[username]:
+                    verified = self._user_redirects[username]["verified"]
+                    test_id_in_redirect = self._user_redirects[username]["test_id"]
+                    return flask.jsonify({"verified": verified and test_id_in_redirect == test_id})
+            return flask.jsonify({"verified": False})
+
         @self.route("/SubmitUserIsValid/<test_id>/<username>", methods=["POST"])
         def submit_user_is_valid(test_id, username):
             """
@@ -275,6 +291,7 @@ class TestApp(FlaskAppBase):
             failed = False
 
         self._user_redirects[username]["remaining_tries"] -= 1
+        self._user_redirects[username]["verified"] = not failed
         return flask.render_template("verification_page.html",
                                      text_center=True,
                                      failed=failed,
@@ -520,4 +537,3 @@ class TestApp(FlaskAppBase):
         except Exception:
             ScholappLogger.error(traceback.format_exc())
             return flask.jsonify({"status": "failure"})
-

@@ -1,12 +1,14 @@
 import os
 import uuid
 from collections import defaultdict
+from datetime import datetime
 from pathlib import Path
 from threading import Lock
 from typing import Dict, List
 
 import flask
-from flask_cors import CORS
+import requests
+from flask_cors import CORS, cross_origin
 from pyomo.solvers.tests.checks.test_CPLEXDirect import TestAddCon
 
 from flask_microservices.chat_microservice.teacher_chat_session import TeacherChatSession
@@ -43,6 +45,16 @@ class ChatApp(FlaskAppBase):
         super()._chdir(__file__)
         ScholappLogger.info(f"Setting up {import_name}")
         self._teachers_sessions = {}
+
+        CORS(self, resources={
+            r"/TeacherOpenSession": {"origins": "*"},
+            r"/StudentOpenSession": {"origins": "*"},
+            r"/TeacherSendResponse": {"origins": "*"},
+            r"/StudentSendResponse": {"origins": "*"},
+            r"/TeacherGetMessages": {"origins": "*"},
+            r"/TeacherHasNewMessages": {"origins": "*"},
+            r"/StudentGetMessages": {"origins": "*"},
+        })
         self._setup()
         ScholappLogger.info(f"Setting up was successful")
 
@@ -67,25 +79,35 @@ class ChatApp(FlaskAppBase):
         def student_send_response():
             return self.actual_send_response()
 
-        @self.route("/TeacherGetMessages")
+        @self.route("/TeacherGetMessages", methods=["POST"])
         def teacher_get_messages():
             return self.actual_get_response(is_teacher=True)
 
-        @self.route("/TeacherHasNewMessages")
-        def student_get_messages():
+        @self.route("/TeacherHasNewMessages", methods=["POST"])
+        def teacher_has_messages():
             return self.actual_has_response()
 
-        @self.route("/StudentGetMessages")
+        @self.route("/StudentGetMessages", methods=["POST"])
         def student_get_messages():
             return self.actual_get_response()
 
     def _verify_login_details(self, username, password, is_teacher=False):
-        pass
+        return True
+
+    @staticmethod
+    def _test_is_verified(username, test_id):
+        # response = requests.get(f"http://127.0.0.1:5000/{test_id}/{username}")
+        # return response.json()["verified"]
+        return True
 
     def actual_open_session(self, is_teacher=False):
         json_data = flask.request.get_json()
-        self._verify_login_details(username=json_data["username"], password=json_data["password"],
-                                   is_teacher=is_teacher)
+
+        logged_in = self._verify_login_details(username=json_data["username"], password=json_data["password"],
+                                               is_teacher=is_teacher)
+
+        if not logged_in:
+            return flask.jsonify({"status": "Username and Password verification failed!"})
 
         cookie = str(uuid.uuid3(uuid.NAMESPACE_DNS, json_data["username"] + json_data["password"] + str(uuid.uuid4())))
 
@@ -94,48 +116,47 @@ class ChatApp(FlaskAppBase):
                                                                                 json_data["participants"],
                                                                                 cookie)
         else:
+            if not ChatApp._test_is_verified(json_data["username"], json_data["test_id"]):
+                return flask.jsonify({"status": "You didn't verify yourself by phone!"})
             if json_data["teacher"] in self._teachers_sessions:
                 student_exists = self._teachers_sessions[json_data["teacher"]].add_student(json_data["username"],
                                                                                            cookie)
                 if not student_exists:
                     return flask.make_response("Failure"), 500
 
-        resp = flask.make_response(flask.jsonify({"status": "success"}))
+        resp = {"status": "success", "cookie": cookie}
 
-        if is_teacher:
-            resp.set_cookie(TEACHER_COOKIE_KEY, cookie)
-        else:
-            resp.set_cookie(STUDENT_COOKIE_KEY, cookie)
-
-        return resp
+        return flask.jsonify(resp)
 
     def actual_send_response(self, is_teacher=False):
         json_data = flask.request.get_json()
+
+        if "time" not in json_data:
+            now = datetime.now()
+            json_data["time"] = now.strftime("Date: %d/%m/%Y Time: %H:%M:%S.%f")
+
         if is_teacher:
-            cookie = flask.request.cookies.get(TEACHER_COOKIE_KEY)
             if json_data["username"] in self._teachers_sessions:
                 teacher_session = self._teachers_sessions[json_data["username"]]
-                return teacher_session.add_teacher_msg(json_data["msg"], json_data["student"], cookie)
+                return teacher_session.add_teacher_msg(json_data["msg"], json_data["student"], json_data["cookie"],
+                                                       json_data["time"])
             else:
                 return flask.make_response("FAILURE"), 500
         else:
-            cookie = flask.request.cookies.get(STUDENT_COOKIE_KEY)
             teacher_session = self._teachers_sessions[json_data["teacher"]]
-            return teacher_session.add_student_msg(json_data["msg"], json_data["username"], cookie)
+            return teacher_session.add_student_msg(json_data["msg"], json_data["username"], json_data["cookie"],
+                                                   json_data["time"])
 
     def actual_get_response(self, is_teacher=False):
         json_data = flask.request.get_json()
         if is_teacher:
-            cookie = flask.request.cookies.get(TEACHER_COOKIE_KEY)
             teacher_session = self._teachers_sessions[json_data["username"]]
-            return teacher_session.get_student_msgs(json_data["student"], cookie)
+            return teacher_session.get_student_msgs(json_data["student"], json_data["cookie"])
         else:
-            cookie = flask.request.cookies.get(STUDENT_COOKIE_KEY)
             teacher_session = self._teachers_sessions[json_data["teacher"]]
-            return teacher_session.get_teacher_msgs(json_data["username"], cookie)
+            return teacher_session.get_teacher_msgs(json_data["username"], json_data["cookie"])
 
     def actual_has_response(self):
         json_data = flask.request.get_json()
-        cookie = flask.request.cookies.get(TEACHER_COOKIE_KEY)
         teacher_session = self._teachers_sessions[json_data["username"]]
-        return teacher_session.teacher_has_msgs(json_data["student"], cookie)
+        return teacher_session.teacher_has_msgs(json_data["student"], json_data["cookie"])
