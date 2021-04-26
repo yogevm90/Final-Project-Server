@@ -1,9 +1,15 @@
 import argparse
 import json
-import os
 from abc import ABC, abstractmethod
 
 from flask import Flask
+import pathlib
+import os
+import sys
+
+curr_dir = pathlib.Path(os.path.dirname(__file__)).parent.parent
+sys.path.append(str(curr_dir))
+
 
 from utilities.custom_importer.custom_importer import CustomImporter
 from utilities.logging.scholapp_server_logger import ScholappLogger
