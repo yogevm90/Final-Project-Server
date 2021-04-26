@@ -9,6 +9,7 @@ import sys
 
 curr_dir = pathlib.Path(os.path.dirname(__file__)).parent.parent
 sys.path.append(str(curr_dir))
+sys.path.append(str(curr_dir / "server"))
 
 
 from utilities.custom_importer.custom_importer import CustomImporter
@@ -79,4 +80,4 @@ if __name__ == '__main__':
     else:
         app = app_import(import_name=args.flask_app, **kwargs)
 
-    app.run(host="127.0.0.1", port=args.port)
+    app.run(host="0.0.0.0", port=args.port)
