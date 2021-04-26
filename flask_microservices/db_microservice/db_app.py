@@ -137,12 +137,13 @@ class DBApp(FlaskAppBase):
 
             try:
                 if not self.validate_user(request_data):
-                    return flask.jsonify({"classes": []})
+                    return flask.jsonify({'verdict': False, "classes": []})
                 username = request_data['username']
-                return self._db_data_manager.get_classes_by_username(username)
+                return flask.jsonify({'verdict': True, "classes": self._db_data_manager.get_classes_by_username(
+                    username)})
 
             except QueryException:
-                return flask.jsonify({"classes": []})
+                return flask.jsonify({'verdict': False, "classes": []})
 
         @self.route("/CreateClass", methods=["POST"])
         def create_class():
