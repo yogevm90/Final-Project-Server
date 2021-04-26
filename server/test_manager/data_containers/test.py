@@ -23,13 +23,17 @@ class Test(Serializable, Jsonable):
     _name: str
     _path_to_pickled_file: Path
 
-    def __init__(self, test_id: str = "", classroom: str = "", teacher: str = "", name: str = ""):
+    def __init__(self, test_id: str = "", classroom: str = "", teacher: str = "", name: str = "",
+                 start: str = "", end: str = ""):
         """
         :param test_id: the test's id
         :param classroom: the test's class
         :param teacher: the test's teacher
         :param name: the test's name
         """
+        self._start = start
+        self._end = end
+        self._date = start.split("T")[0]
         self._questions = []
         self._test_id = test_id
         self._classroom = classroom
@@ -65,6 +69,18 @@ class Test(Serializable, Jsonable):
         :return: the test's pickled file path
         """
         return self._path_to_pickled_file
+
+    @property
+    def Date(self):
+        return self._date
+
+    @property
+    def Start(self):
+        return self._start
+
+    @property
+    def End(self):
+        return self._end
 
     @property
     def Classroom(self):
@@ -133,6 +149,9 @@ class Test(Serializable, Jsonable):
                 self._questions += deserialized_test.Questions
                 self._classroom = deserialized_test.Classroom
                 self._path_to_pickled_file = deserialized_test.PickledFilePath
+                self._date = deserialized_test.Date
+                self._start = deserialized_test.Start
+                self._end = deserialized_test.End
         return self
 
     def _get_pickled_file_path(self):
@@ -152,9 +171,13 @@ class Test(Serializable, Jsonable):
         self._teacher = json_val["teacher"]
         self._participants = json_val["participants"]
         self._name = json_val["name"]
+        self._start = json_val["start"]
+        self._end = json_val["end"]
+        self._date = json_val["date"]
         self._test_id = str(uuid.uuid3(uuid.NAMESPACE_DNS,
                                        f"{self._teacher}+{self._classroom}+{str(self._questions)}+"
-                                       f"{str(self._participants)}+{self._name}+{uuid.uuid4()}"))
+                                       f"{str(self._participants)}+{self._name}+{self._start}+"
+                                       f"{self._end}+{uuid.uuid4()}"))
         return self
 
     def json(self):
@@ -167,5 +190,8 @@ class Test(Serializable, Jsonable):
             "classroom": self._classroom,
             "teacher": self._teacher,
             "questions": [q.json() for q in self._questions],
+            "start": self._start,
+            "end": self._end,
+            "date": self._date,
             "participants": self._participants
         }
