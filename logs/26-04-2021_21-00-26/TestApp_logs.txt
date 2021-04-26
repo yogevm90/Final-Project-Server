@@ -1,0 +1,2 @@
+[26-Apr-21 21:00:34] [Scholapp server] [Process: 7216] [Scholapp] - INFO - Setting up flask_microservices.test_microservice.test_app
+[26-Apr-21 21:00:34] [Scholapp server] [Process: 7216] [Scholapp] - INFO - Setting up was successful
