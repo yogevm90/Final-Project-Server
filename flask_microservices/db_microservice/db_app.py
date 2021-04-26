@@ -31,7 +31,7 @@ class DBApp(FlaskAppBase):
         ScholappLogger.info(f"Setting up was successful")
 
     def _setup(self):
-        @self.route("/GetUser/<method>/<user_data>")
+        @self.route("/GetUser/<method>/<user_data>", methods=["POST"])
         def get_user(method, user_data, request_data):
             if not self.validate_user(request_data):
                 return {'verdict': False, 'reason': 'wrong username or password'}
@@ -43,7 +43,7 @@ class DBApp(FlaskAppBase):
             except QueryException as e:
                 return {'verdict': False, 'reason': '{}'.format(e.message)}
 
-        @self.route("/SetUser/<method>/<user_data>")
+        @self.route("/SetUser/<method>/<user_data>", methods=["POST"])
         def set_user(method, user_data, request_data):
             try:
                 if not self.validate_user(request_data):
@@ -62,7 +62,7 @@ class DBApp(FlaskAppBase):
             except QueryException as e:
                 return {'verdict': False, 'reason': '{}'.format(e.message)}
 
-        @self.route("/SetClass/<method>/<class_data>")
+        @self.route("/SetClass/<method>/<class_data>", methods=["POST"])
         def set_class(method, class_data, request_data):
             try:
                 if not self.validate_user(request_data):
@@ -81,8 +81,8 @@ class DBApp(FlaskAppBase):
             except QueryException as e:
                 return {'verdict': False, 'reason': '{}'.format(e.message)}
 
-        @self.route("/Login")
-        @self.route("/Signout")
+        @self.route("/Login", methods=["POST"])
+        @self.route("/Signout", methods=["POST"])
         def login(request_data):
             if self.validate_user(request_data):
                 if self._db_data_manager.is_teacher(username=request_data['username']):
@@ -91,7 +91,7 @@ class DBApp(FlaskAppBase):
                     return {'verdict': True, 'role': 'student'}
             return {'verdict': False, 'reason': 'wrong username or password'}
 
-        @self.route("/Register")
+        @self.route("/Register", methods=["POST"])
         def register(request_data):
             if self._db_data_manager.user_exists(request_data['username']):
                 return {'verdict': False, 'reason': 'user already exists'}
@@ -103,7 +103,7 @@ class DBApp(FlaskAppBase):
             except QueryException as e:
                 return {'verdict': False, 'reason': '{}'.format(e.message)}
 
-        @self.route("/ChangePassword")
+        @self.route("/ChangePassword", methods=["POST"])
         def change_password(request_data):
             try:
                 if self.validate_user(request_data):
@@ -118,7 +118,7 @@ class DBApp(FlaskAppBase):
             except QueryException as e:
                 return {'verdict': False, 'reason': '{}'.format(e.message)}
 
-        @self.route("/GetClasses")
+        @self.route("/GetClasses", methods=["POST"])
         def get_user_classes(request_data):
             try:
                 if not self.validate_user(request_data):
@@ -129,7 +129,7 @@ class DBApp(FlaskAppBase):
             except QueryException:
                 return []
 
-        @self.route("/CreateClass")
+        @self.route("/CreateClass", methods=["POST"])
         def create_class(request_data):
             try:
                 if not self.validate_user(request_data):
@@ -145,7 +145,7 @@ class DBApp(FlaskAppBase):
             except QueryException as e:
                 return {'verdict': False, 'reason': '{}'.format(e.message)}
 
-        @self.route("/Details")
+        @self.route("/Details", methods=["POST"])
         def details(request_data):
             try:
                 if not self.validate_user(request_data):
@@ -177,7 +177,7 @@ class DBApp(FlaskAppBase):
             except QueryException as e:
                 return {'verdict': False, 'reason': '{}'.format(e.message)}
 
-        @self.route("/GetClassroomPaths")
+        @self.route("/GetClassroomPaths", methods=["POST"])
         def get_classroom_paths(request_data):
             try:
                 if not self.validate_user(request_data):
@@ -187,7 +187,7 @@ class DBApp(FlaskAppBase):
             except QueryException as e:
                 return {'verdict': False, 'reason': '{}'.format(e.message)}
 
-        @self.route("/GetPathToSave")
+        @self.route("/GetPathToSave", methods=["POST"])
         def get_path_to_save(request_data):
             try:
                 if not self.validate_user(request_data):
