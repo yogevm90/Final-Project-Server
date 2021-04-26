@@ -47,19 +47,6 @@ List:
 }
 
 Request:
-/GetClass/<method>/<class_data> - {
-    "username": str,
-    "password": str,
-}
-"method": "ByName" \ "ById"
-class_data: str
-Response:
-{
-    "verdict": bool
-    "class_document": {}
-}
-
-Request:
 /SetClass/<method>/<class_data> - {
     "username": str,
     "password": str,
@@ -113,17 +100,19 @@ Response:
 }
 
 Request:
-/GetClassroomPaths - { // everything
+/GetClassroomPaths - {
     "username": str,
     "password": str,
     "class_id": str
 }
 Response:
-List:
 {
-    "user_id": str,
-    "video": str,
-    "audio": str
+    "verdict": bool
+    "data": List[{
+        "user_id": str,
+        "video": str,
+        "audio": str
+        }]
 }
 
 Request:
@@ -143,23 +132,38 @@ Response:
 
 Request:
 /CreateClass - {
-    "username": "VAL1",
-    "password": "VAL2",
-    "teacher_name": "VAL3",
-    "img_path": "VAL4",
-    "name": "VAL5",
-    "description": "VAL6",
-    "external_links": LIST,
-    "homework_links": LIST,
-    "updates": LIST,
+    "username": str,
+    "password": str,
+    "teacher_name": str,
+    "img_path": str,
+    "name": str,
+    "description": str,
+    "external_links": str,
+    "homework_links": str,
+    "updates": str,
     "tests_ids": LIST[ID],
     "participants": LIST[ID],
-    "start": "VAL7",
-    "end": "VAL8",
+    "start": str,
+    "end": str,
     "day": [NUM between 1 - 7]
 }
 Response:
 {
     "verdict": bool
     "class_document": {}
+}
+
+Request:
+/Details - {    #Optional -  class or user
+    "username": str,
+    "password": str,
+    "data": {
+        "class": {}
+        "user": {}
+    }
+}
+Response:
+{
+    "verdict": bool
+    "data": {}  #class or user - depends on request
 }

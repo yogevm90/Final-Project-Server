@@ -39,17 +39,7 @@ class DBApp(FlaskAppBase):
                 get_user_by_data = self._student_methods[method]
                 user_document = get_user_by_data(user_data)
                 return {'verdict': True, 'user_document': user_document}
-            except QueryException as e:
-                return {'verdict': False, 'reason': '{}'.format(e.message)}
 
-        @self.route("/GetClass/<method>/<class_data>")
-        def get_class(method, class_data, request_data):
-            if not self.validate_user(request_data):
-                return {'verdict': False, 'reason': 'wrong username or password'}
-            try:
-                get_class_by_data = self._class_methods[method]
-                class_document = get_class_by_data(class_data)
-                return {'verdict': True, 'class_document': class_document}
             except QueryException as e:
                 return {'verdict': False, 'reason': '{}'.format(e.message)}
 
@@ -68,6 +58,7 @@ class DBApp(FlaskAppBase):
                 self._db_data_manager.update_user(user_document['username'], user_document)
                 updated_user = self._db_data_manager.get_user_by_name(user_document['username'])
                 return {'verdict': True, 'user_document': updated_user}
+
             except QueryException as e:
                 return {'verdict': False, 'reason': '{}'.format(e.message)}
 
@@ -86,6 +77,7 @@ class DBApp(FlaskAppBase):
                 self._db_data_manager.update_class(class_document['name'], class_document)
                 updated_class = self._db_data_manager.get_class_by_name(class_document['name'])
                 return {'verdict': True, 'class_document': updated_class}
+
             except QueryException as e:
                 return {'verdict': False, 'reason': '{}'.format(e.message)}
 
@@ -107,6 +99,7 @@ class DBApp(FlaskAppBase):
                 self._db_data_manager.insert_user(request_data)
                 user_document = self.student_by_name(request_data['username'])
                 return {'verdict': True, 'user_document': user_document}
+
             except QueryException as e:
                 return {'verdict': False, 'reason': '{}'.format(e.message)}
 
@@ -121,6 +114,7 @@ class DBApp(FlaskAppBase):
                     return {'verdict': True}
                 else:
                     return {'verdict': False, 'reason': 'wrong password'}
+
             except QueryException as e:
                 return {'verdict': False, 'reason': '{}'.format(e.message)}
 
@@ -130,13 +124,8 @@ class DBApp(FlaskAppBase):
                 if not self.validate_user(request_data):
                     return []
                 username = request_data['username']
-                classes = self._db_data_manager.get_classes_by_username(username)
-                class_list = []
-                for class_name in classes:
-                    class_document = self._db_data_manager.get_class_by_name(class_name)
-                    class_min_data = {key: class_document[key] for key in ['name', 'id', 'time', 'description']}
-                    class_list.append(class_min_data)
-                return class_list
+                return self._db_data_manager.get_classes_by_username(username)
+
             except QueryException:
                 return []
 
@@ -152,6 +141,64 @@ class DBApp(FlaskAppBase):
                 self._db_data_manager.insert_class(request_data)
                 class_document = self._db_data_manager.get_user_by_name(request_data['name'])
                 return {'verdict': True, 'class_document': self.class_by_name(class_document)}
+
+            except QueryException as e:
+                return {'verdict': False, 'reason': '{}'.format(e.message)}
+
+        @self.route("/Details")
+        def details(request_data):
+            try:
+                if not self.validate_user(request_data):
+                    return {'verdict': False, 'reason': 'wrong username or password'}
+                data = request_data['data']
+                current_data = {}
+                if 'user' in data:
+                    user_data = data['user']
+                    if 'username' in user_data:
+                        current_data = self.student_by_name(user_data['username'])
+                    elif 'id' in user_data:
+                        current_data = self.student_by_id(user_data['id'])
+                    for key in user_data:
+                        current_data[key] = user_data[key]
+                    self._db_data_manager.update_user(current_data['username'], current_data)
+                elif 'class' in data:
+                    class_data = data['class']
+                    if 'name' in class_data:
+                        current_data = self.class_by_name(class_data['name'])
+                    elif 'id' in class_data:
+                        current_data = self.class_by_id(class_data['id'])
+                    for key in class_data:
+                        current_data[key] = class_data[key]
+                    self._db_data_manager.update_class(current_data['name'], current_data)
+                else:
+                    return {'verdict': False, 'reason': 'Wrong data format'}
+                return {'verdict': True, 'data': current_data}
+
+            except QueryException as e:
+                return {'verdict': False, 'reason': '{}'.format(e.message)}
+
+        @self.route("/GetClassroomPaths")
+        def get_classroom_paths(request_data):
+            try:
+                if not self.validate_user(request_data):
+                    return {'verdict': False, 'reason': 'wrong username or password'}
+                class_document = self.class_by_id(request_data['class_id'])
+                return {'verdict': True, 'data': class_document['stream_paths']}
+            except QueryException as e:
+                return {'verdict': False, 'reason': '{}'.format(e.message)}
+
+        @self.route("/GetPathToSave")
+        def get_path_to_save(request_data):
+            try:
+                if not self.validate_user(request_data):
+                    return {'verdict': False, 'reason': 'wrong username or password'}
+                class_document = self.class_by_id(request_data['class_id'])
+                user_id = self.student_by_name(request_data['username'])['id']
+                for student_path in class_document['stream_paths']:
+                    if student_path['user_id'] == user_id:
+                        return {'verdict': True, 'data': student_path}
+                return {'verdict': False, 'reason': 'user path was not found'}
+
             except QueryException as e:
                 return {'verdict': False, 'reason': '{}'.format(e.message)}
 

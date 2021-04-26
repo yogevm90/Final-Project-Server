@@ -12,6 +12,7 @@ MongoDB Database:
     Collection: "classes"
         Document: class
             name: str
+            id: str
             teacher_name: str
             description: str
             external_links: List[str]
@@ -19,5 +20,6 @@ MongoDB Database:
             updates: List[str]
             tests_ids: List["tests_ids"]
             participants: List["students_username"]
+            stream_paths: List[{"user_id": str, "video": str, "audio": str}]
             time: str
             img_path: str
