@@ -45,7 +45,8 @@ class FlaskRunner(RunnerInterface):
         if self._args:
             cmd += f"-r {' '.join(self._args)}"
         process = subprocess.Popen(cmd,
-                                   shell=True)
+                                   shell=True,
+                                   cwd=os.getcwd())
         self._process = process
 
     def stop(self):
