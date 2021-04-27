@@ -109,7 +109,7 @@ Response:
 {
     "verdict": bool
     "data": List[{
-        "user_id": str,
+        "id": str,
         "video": str,
         "audio": str
         }]
@@ -134,7 +134,7 @@ Request:
 /CreateClass - {
     "username": str,
     "password": str,
-    "teacher_name": str,
+    "teacher": str,
     "img_path": str,
     "name": str,
     "description": str,

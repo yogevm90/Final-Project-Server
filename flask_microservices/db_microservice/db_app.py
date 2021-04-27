@@ -60,6 +60,8 @@ class DBApp(FlaskAppBase):
                     return flask.jsonify({'verdict': False, 'reason': 'Operation not allowed'})
                 updated_details = request_data['details']
                 for key in updated_details:
+                    if key == 'password' or key == 'username':
+                        continue
                     user_document[key] = updated_details[key]
                 self._db_data_manager.update_user(user_document['username'], user_document)
                 updated_user = self.student_by_name(user_document['username'])
@@ -77,7 +79,7 @@ class DBApp(FlaskAppBase):
                 get_class_by_data = self._class_methods[method]
                 class_document = get_class_by_data(class_data)
                 details = request_data['details']
-                if details['teacher_name'] != class_document['teacher_name']:
+                if details['teacher'] != class_document['teacher']:
                     return flask.jsonify({'verdict': False, 'reason': 'Operation not allowed'})
                 for key in details:
                     class_document[key] = details[key]
@@ -148,9 +150,9 @@ class DBApp(FlaskAppBase):
             try:
                 if not self.validate_user(request_data):
                     return flask.jsonify({'verdict': False, 'reason': 'wrong username or password'})
-                if not self._db_data_manager.is_teacher(request_data['teacher_name']):
+                if not self._db_data_manager.is_teacher(request_data['teacher']):
                     return flask.jsonify({'verdict': False,
-                                          'reason': '{} is not a teacher'.format(request_data['teacher_name'])})
+                                          'reason': '{} is not a teacher'.format(request_data['teacher'])})
                 request_data.pop('username')
                 request_data.pop('password')
                 self._db_data_manager.insert_class(request_data)
@@ -199,6 +201,8 @@ class DBApp(FlaskAppBase):
                 if not self.validate_user(request_data):
                     return flask.jsonify({'verdict': False, 'reason': 'wrong username or password'})
                 class_document = self.class_by_id(request_data['class_id'])
+                if 'class_id' not in class_document:
+                    return {'verdict': False, 'reason': 'class doesnt exist'}
                 return flask.jsonify({'verdict': True, 'data': class_document['stream_paths']})
             except QueryException as e:
                 return flask.jsonify({'verdict': False, 'reason': '{}'.format(e.message)})
@@ -209,10 +213,12 @@ class DBApp(FlaskAppBase):
             try:
                 if not self.validate_user(request_data):
                     return flask.jsonify({'verdict': False, 'reason': 'wrong username or password'})
-                class_document = self.class_by_id(request_data['class_id'])
+                class_document = self.class_by_id(request_data['id'])
+                if 'class_id' not in class_document:
+                    return {'verdict': False, 'reason': 'class doesnt exist'}
                 user_id = self.student_by_name(request_data['username'])['id']
                 for student_path in class_document['stream_paths']:
-                    if student_path['user_id'] == user_id:
+                    if student_path['id'] == user_id:
                         return flask.jsonify({'verdict': True, 'data': student_path})
                 return flask.jsonify({'verdict': False, 'reason': 'user path was not found'})
 

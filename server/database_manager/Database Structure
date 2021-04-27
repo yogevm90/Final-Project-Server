@@ -12,15 +12,15 @@ MongoDB Database:
     Collection: "classes"
         Document: class
             "class_name": str
-            "id": str
-            "teacher_name": str
+            "class_id": str
+            "teacher": str
             "description": str
             "external_links": List[str]
             "homework_links": List[str]
             "updates": List[str]
             "tests_ids": List["tests_ids"]
             "participants": List["students_username"]
-            "stream_paths": List[{"user_id": str, "video": str, "audio": str}]
+            "stream_paths": List[{"id": str, "video": str, "audio": str}]
             "days": List[str]
             "hours": List[str]
             "img_path": str
