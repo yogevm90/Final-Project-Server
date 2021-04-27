@@ -1,25 +1,26 @@
 MongoDB Database:
     Collection: "users"
         Document: user
-            username: str
-            password: str
-            id: str
-            name: str
-            surname: str
-            role: "teacher" \ "student"
-            class: List["class_ids"]
+            "username": str
+            "password": str
+            "id": str
+            "name": str
+            "surname": str
+            "role": "teacher" \ "student"
+            "classes": List["class_ids"]
 
     Collection: "classes"
         Document: class
-            name: str
-            id: str
-            teacher_name: str
-            description: str
-            external_links: List[str]
-            homework_links: List[str]
-            updates: List[str]
-            tests_ids: List["tests_ids"]
-            participants: List["students_username"]
-            stream_paths: List[{"user_id": str, "video": str, "audio": str}]
-            time: str
-            img_path: str
+            "class_name": str
+            "id": str
+            "teacher_name": str
+            "description": str
+            "external_links": List[str]
+            "homework_links": List[str]
+            "updates": List[str]
+            "tests_ids": List["tests_ids"]
+            "participants": List["students_username"]
+            "stream_paths": List[{"user_id": str, "video": str, "audio": str}]
+            "days": List[str]
+            "hours": List[str]
+            "img_path": str

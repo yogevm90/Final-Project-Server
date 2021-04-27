@@ -41,6 +41,8 @@ class DBApp(FlaskAppBase):
             try:
                 get_user_by_data = self._student_methods[method]
                 user_document = get_user_by_data(user_data)
+                if 'username' not in user_document:
+                    return flask.jsonify({'verdict': False, 'reason': 'User doesnt exist'})
                 return flask.jsonify({'verdict': True, 'user_document': user_document})
 
             except QueryException as e:
@@ -49,7 +51,6 @@ class DBApp(FlaskAppBase):
         @self.route("/SetUser/<method>/<user_data>", methods=["POST"])
         def set_user(method, user_data):
             request_data = flask.request.get_json()
-
             try:
                 if not self.validate_user(request_data):
                     return flask.jsonify({'verdict': False, 'reason': 'wrong username or password'})
@@ -57,11 +58,11 @@ class DBApp(FlaskAppBase):
                 user_document = get_user_by_data(user_data)
                 if user_document['username'] != user_data and user_document['id'] != user_data:
                     return flask.jsonify({'verdict': False, 'reason': 'Operation not allowed'})
-                details = request_data['details']
-                for key in details:
-                    user_document[key] = details[key]
+                updated_details = request_data['details']
+                for key in updated_details:
+                    user_document[key] = updated_details[key]
                 self._db_data_manager.update_user(user_document['username'], user_document)
-                updated_user = self._db_data_manager.get_user_by_name(user_document['username'])
+                updated_user = self.student_by_name(user_document['username'])
                 return flask.jsonify({'verdict': True, 'user_document': updated_user})
 
             except QueryException as e:
@@ -70,7 +71,6 @@ class DBApp(FlaskAppBase):
         @self.route("/SetClass/<method>/<class_data>", methods=["POST"])
         def set_class(method, class_data):
             request_data = flask.request.get_json()
-
             try:
                 if not self.validate_user(request_data):
                     return flask.jsonify({'verdict': False, 'reason': 'wrong username or password'})
@@ -103,7 +103,6 @@ class DBApp(FlaskAppBase):
         @self.route("/Register", methods=["POST"])
         def register():
             request_data = flask.request.get_json()
-
             if self._db_data_manager.user_exists(request_data['username']):
                 return flask.jsonify({'verdict': False, 'reason': 'user already exists'})
             try:
@@ -117,7 +116,6 @@ class DBApp(FlaskAppBase):
         @self.route("/ChangePassword", methods=["POST"])
         def change_password():
             request_data = flask.request.get_json()
-
             try:
                 if self.validate_user(request_data):
                     username = request_data['username']
@@ -134,7 +132,6 @@ class DBApp(FlaskAppBase):
         @self.route("/GetClasses", methods=["POST"])
         def get_user_classes():
             request_data = flask.request.get_json()
-
             try:
                 if not self.validate_user(request_data):
                     return flask.jsonify({'verdict': False, "classes": []})
@@ -148,7 +145,6 @@ class DBApp(FlaskAppBase):
         @self.route("/CreateClass", methods=["POST"])
         def create_class():
             request_data = flask.request.get_json()
-
             try:
                 if not self.validate_user(request_data):
                     return flask.jsonify({'verdict': False, 'reason': 'wrong username or password'})
@@ -158,8 +154,7 @@ class DBApp(FlaskAppBase):
                 request_data.pop('username')
                 request_data.pop('password')
                 self._db_data_manager.insert_class(request_data)
-                class_document = self._db_data_manager.get_user_by_name(request_data['name'])
-                return flask.jsonify({'verdict': True, 'class_document': self.class_by_name(class_document)})
+                return flask.jsonify({'verdict': True})
 
             except QueryException as e:
                 return flask.jsonify({'verdict': False, 'reason': '{}'.format(e.message)})
@@ -167,7 +162,6 @@ class DBApp(FlaskAppBase):
         @self.route("/Details", methods=["POST"])
         def details():
             request_data = flask.request.get_json()
-
             try:
                 if not self.validate_user(request_data):
                     return flask.jsonify({'verdict': False, 'reason': 'wrong username or password'})
@@ -201,7 +195,6 @@ class DBApp(FlaskAppBase):
         @self.route("/GetClassroomPaths", methods=["POST"])
         def get_classroom_paths():
             request_data = flask.request.get_json()
-
             try:
                 if not self.validate_user(request_data):
                     return flask.jsonify({'verdict': False, 'reason': 'wrong username or password'})
@@ -213,7 +206,6 @@ class DBApp(FlaskAppBase):
         @self.route("/GetPathToSave", methods=["POST"])
         def get_path_to_save():
             request_data = flask.request.get_json()
-
             try:
                 if not self.validate_user(request_data):
                     return flask.jsonify({'verdict': False, 'reason': 'wrong username or password'})
