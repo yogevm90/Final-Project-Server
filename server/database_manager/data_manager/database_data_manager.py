@@ -30,7 +30,7 @@ class DatabaseDataManager(object):
         return self._classes_collection.find_one(query)
 
     def get_class_by_id(self, class_id: str):
-        query = {'id': class_id}
+        query = {'class_id': class_id}
         return self._classes_collection.find_one(query)
 
     def get_classes_by_username(self, username: str):
