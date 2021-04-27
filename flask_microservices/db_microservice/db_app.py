@@ -232,6 +232,7 @@ class DBApp(FlaskAppBase):
         if data is None:
             return {}
         data.pop('password')
+        data.pop('_id')
         return data
 
     def student_by_name(self, student_name):
@@ -239,18 +240,21 @@ class DBApp(FlaskAppBase):
         if data is None:
             return {}
         data.pop('password')
+        data.pop('_id')
         return data
 
     def class_by_id(self, class_id):
         data = self._db_data_manager.get_class_by_id(class_id)
         if data is None:
             return {}
+        data.pop('_id')
         return data
 
     def class_by_name(self, class_name):
         data = self._db_data_manager.get_class_by_name(class_name)
         if data is None:
             return {}
+        data.pop('_id')
         return data
 
     def validate_user(self, request):
