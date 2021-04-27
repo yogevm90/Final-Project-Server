@@ -213,7 +213,7 @@ class DBApp(FlaskAppBase):
             try:
                 if not self.validate_user(request_data):
                     return flask.jsonify({'verdict': False, 'reason': 'wrong username or password'})
-                class_document = self.class_by_id(request_data['id'])
+                class_document = self.class_by_id(request_data['class_id'])
                 if 'class_id' not in class_document:
                     return {'verdict': False, 'reason': 'class doesnt exist'}
                 user_id = self.student_by_name(request_data['username'])['id']
