@@ -145,7 +145,7 @@ Request:
     "participants": LIST[ID],
     "start": str,
     "end": str,
-    "day": [NUM between 1 - 7]
+    "day": int [between 1 - 7]
 }
 Response:
 {
