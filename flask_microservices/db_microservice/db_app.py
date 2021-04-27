@@ -256,7 +256,9 @@ class DBApp(FlaskAppBase):
         return data
 
     def validate_user(self, request):
-        if self._db_data_manager.user_exists(request['username']):
-            if self._db_auth_manager.validate_user(request['username'], request['password']):
+        username = request['username']
+        if self._db_data_manager.user_exists(username):
+            if self._db_auth_manager.validate_user(username, request['password']):
+                self._db_data_manager.login_user(username)
                 return True
         return False

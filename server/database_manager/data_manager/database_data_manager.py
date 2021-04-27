@@ -1,5 +1,6 @@
 import pymongo
 from pymongo.collection import Collection
+from datetime import datetime, timedelta
 
 from server.database_manager.authentication_manager import authentication_manager
 from server.database_manager.exception_types import InvalidRequestException
@@ -62,7 +63,7 @@ class DatabaseDataManager(object):
             raise InvalidRequestException('User {} cannot be teacher'.format(class_data['teacher']))
         self._classes_collection.insert_one(class_data)
 
-    def add_participant(self, username, class_name):
+    def add_participant(self, username: str, class_name: str):
         if not self.class_exists(class_name):
             raise InvalidRequestException('class {} does not exist'.format(class_name))
         if not self.user_exists(username):
@@ -71,7 +72,7 @@ class DatabaseDataManager(object):
             raise InvalidRequestException('user {} already participating class'.format(username))
         self._classes_collection.find_one_and_update({'name': class_name}, {'$push': {'participants': username}})
 
-    def remove_participant(self, username, class_name):
+    def remove_participant(self, username: str, class_name: str):
         if not self.class_exists(class_name):
             raise InvalidRequestException('class {} does not exist'.format(class_name))
         if not self.user_exists(username):
@@ -80,13 +81,13 @@ class DatabaseDataManager(object):
             raise InvalidRequestException('user {} is not participating class'.format(username))
         self._classes_collection.find_one_and_update({'name': class_name}, {'$pull': {'participants': username}})
 
-    def user_exists(self, username):
+    def user_exists(self, username: str):
         return self._users_collection.count_documents({'username': username}, limit=1) != 0
 
-    def class_exists(self, class_name):
+    def class_exists(self, class_name: str):
         return self._classes_collection.count_documents({'name': class_name}, limit=1) != 0
 
-    def user_participating_class(self, username, class_name):
+    def user_participating_class(self, username: str, class_name: str):
         if not self.class_exists(class_name):
             return False
         user_query = {'name': class_name, 'participants': {'$all': [username]}}
@@ -94,20 +95,35 @@ class DatabaseDataManager(object):
         return (self._classes_collection.find(user_query).count() == 1 or
                 self._classes_collection.find(teacher_query).count() == 1)
 
-    def is_teacher(self, username):
+    def is_teacher(self, username: str):
         if not self.user_exists(username):
             return False
         teacher_query = {'username': username, 'role': 'teacher'}
         return self._users_collection.find(teacher_query).count() == 1
 
-    def update_user(self, username, update_info):
+    def update_user(self, username: str, update_info: dict):
         if not self.user_exists(username):
             raise InvalidRequestException('user {} does not exist'.format(username))
         for key in update_info:
             self._users_collection.find_one_and_update({'username': username}, {'$set': {key: update_info[key]}})
 
-    def update_class(self, class_name, update_info):
+    def update_class(self, class_name: str, update_info: dict):
         if not self.class_exists(class_name):
             raise InvalidRequestException('class {} does not exist'.format(class_name))
         for key in update_info:
             self._classes_collection.find_one_and_update({'name': class_name}, {'$set': {key: update_info[key]}})
+
+    def login_user(self, username: str):
+        time_now = datetime.now()
+        parsed_time = time_now.strftime("%m/%d/%Y, %H:%M:%S")
+        self._users_collection.find_one_and_update({'username': username}, {'$set': {'last_login': parsed_time}})
+
+    def check_if_user_logged_in(self, username: str, hours_since=0, minutes_since=60, seconds_since=0):
+        time_now = datetime.now()
+        user_document = self.get_user_by_name(username)
+        if 'last_login' not in user_document:
+            return False
+        last_login = datetime.strptime(user_document['login'], "%m/%d/%Y, %H:%M:%S")
+        if time_now < last_login + timedelta(hours=hours_since, minutes=minutes_since, seconds=seconds_since):
+            return True
+        return False
