@@ -2,6 +2,7 @@ import json
 import os
 import traceback
 import uuid
+from datetime import datetime
 from pathlib import Path
 from typing import Dict
 
@@ -12,8 +13,10 @@ from flask_microservices.flask_executor.flask_app_base import FlaskAppBase
 from flask_microservices.test_microservice.test_user_agent_validator import TestUserAgentValidator
 from server.test_manager.data_containers.test import Test
 from server.test_manager.data_containers.test_container.test_container import TestContainer
+from utilities.decorators.in_try_catch import in_try_catch
 from utilities.logging.scholapp_server_logger import ScholappLogger
 from utilities.qrcode_creator.qrcode_creator import QRCodeCreator
+from utilities.server_login.server_login import ServerLogin
 
 
 class TestApp(FlaskAppBase):
@@ -102,8 +105,8 @@ class TestApp(FlaskAppBase):
             :param test_id: test id
             :return: the test found
             """
-            self._verify_login_details(flask.request.get_json())
-            return flask.jsonify({"test": self._test_container.Tests[test_id].json()})
+            TestApp._verify_login_details(flask.request.get_json())
+            return flask.jsonify({"verdict": True, "test": self._test_container.Tests[test_id].json()})
 
         @self.route("/GetTestByClassId/<class_id>", methods=["POST"])
         def get_test_by_class_id(class_id: str):
@@ -111,13 +114,13 @@ class TestApp(FlaskAppBase):
             :param class_id class id
             :return: the tests found
             """
-            self._verify_login_details(flask.request.get_json())
+            TestApp._verify_login_details(flask.request.get_json())
             tests = []
             for test in self._test_container.Tests.values():
                 if test.Classroom == class_id:
                     tests += [test]
 
-            return flask.jsonify({"tests": tests})
+            return flask.jsonify({"verdict": True, "tests": tests})
 
         @self.route("/VerifyTest", methods=["POST"])
         def verify():
@@ -144,9 +147,10 @@ class TestApp(FlaskAppBase):
             """
             Add new test
 
-            :return: {"status": "success"} in case of success and {"status": "failure"} O.W.
+            :return: {"verdict": True} in case of success and {"verdict": False} O.W.
+
             """
-            self._verify_login_details(flask.request.get_json())
+            TestApp._verify_login_details(flask.request.get_json())
             return self.actual_add_test()
 
         @self.route("/AddParticipant/<test_id>", methods=["POST"])
@@ -155,7 +159,8 @@ class TestApp(FlaskAppBase):
             """
             Add new participant for the test
 
-            :return: {"status": "success"} in case of success and {"status": "failure"} O.W.
+            :return: {"verdict": True} in case of success and {"verdict": False} O.W.
+
             """
             return self.actual_add_participant(test_id)
 
@@ -176,7 +181,8 @@ class TestApp(FlaskAppBase):
 
             :param test_id: as part of which test to check
             :param username: user to mark
-            :return: {"status": "success"} in case of success and {"status": "failure"} O.W.
+            :return: {"verdict": True} in case of success and {"verdict": False} O.W.
+
             """
             return self.actual_mark_user_pc_for_check(test_id, username)
 
@@ -187,7 +193,8 @@ class TestApp(FlaskAppBase):
 
             :param test_id: as part of which test to check
             :param username: user to mark
-            :return: {"status": "success"} in case of success and {"status": "failure"} O.W.
+            :return: {"verdict": True} in case of success and {"verdict": False} O.W.
+
             """
             return self.actual_is_user_ok(test_id, username)
 
@@ -196,7 +203,8 @@ class TestApp(FlaskAppBase):
             """
             Submit student's test
 
-            :return: {"status": "success"} in case of success and {"status": "failure"} O.W.
+            :return: {"verdict": True} in case of success and {"verdict": False} O.W.
+
             """
             return self.actual_submit_test()
 
@@ -207,7 +215,8 @@ class TestApp(FlaskAppBase):
 
             :param test_id: test id
             :param username: username
-            :return: {"status": "success"} in case of success and {"status": "failure"} O.W.
+            :return: {"verdict": True} in case of success and {"verdict": False} O.W.
+
             """
             return self.actual_submit_user_is_invalid(test_id, username)
 
@@ -218,14 +227,15 @@ class TestApp(FlaskAppBase):
 
             :param test_id: test id
             :param username: username
-            :return: {"status": "success"} in case of success and {"status": "failure"} O.W.
+            :return: {"verdict": True} in case of success and {"verdict": False} O.W.
+
             """
             if username in self._user_redirects:
                 if "verified" in self._user_redirects[username]:
                     verified = self._user_redirects[username]["verified"]
                     test_id_in_redirect = self._user_redirects[username]["test_id"]
-                    return flask.jsonify({"verified": verified and test_id_in_redirect == test_id})
-            return flask.jsonify({"verified": False})
+                    return flask.jsonify({"verified": verified and test_id_in_redirect == test_id, "verdict": True})
+            return flask.jsonify({"verified": False, "verdict": False})
 
         @self.route("/SubmitUserIsValid/<test_id>/<username>", methods=["POST"])
         def submit_user_is_valid(test_id, username):
@@ -234,17 +244,32 @@ class TestApp(FlaskAppBase):
 
             :param test_id: test id
             :param username: username
-            :return: {"status": "success"} in case of success and {"status": "failure"} O.W.
+            :return: {"verdict": True} in case of success and {"verdict": False} O.W.
+
             """
             return self.actual_submit_user_is_valid(test_id, username)
 
-    @classmethod
-    def _data_is_valid(cls, data):
+    def _data_is_valid(self, data):
+        now = datetime.now()
+        try:
+            test = self._test_container.get_test_by_id(data["test_id"])
+        except KeyError:
+            # Test id is not valid
+            return False
+
+        start = datetime.strptime(test.Start, "%y-%m-%dT%H:%M:00")
+        end = datetime.strptime(test.End, "%y-%m-%dT%H:%M:00")
+
+        # Test didn't start yet
+        if start > now or end < now:
+            return False
+
         return True
 
     def _fail_test(self, username):
         self._user_redirects[username]["msg"] = "YOU FAILED THE TEST! \nGOOD LUCK!"
 
+    @in_try_catch
     def actual_start_test(self, test_id: str, username: str):
         """
         Create the start page
@@ -259,13 +284,14 @@ class TestApp(FlaskAppBase):
         cookie = flask.request.cookies.get("userID")
         user_data = self._cookies[cookie]
 
-        if TestApp._data_is_valid(data) and cookie in self._cookies and \
-                test_id == self._cookies[cookie]["test_id"] and user_data["username"] == username:
+        if self._data_is_valid(data) and cookie in self._cookies and \
+                test_id == user_data["test_id"] and user_data["username"] == username:
             redirect_url_id = self._user_redirects[username]["verification_id"]
             test_url = os.path.join("static", f"{username}.png")
             self._qr_code_generator.create({
                 "url": f"http://localhost:{self._port}/VerifyYourTest/{test_id}/{username}"
             }, save_to=test_url)
+
             return flask.render_template("qr_code_page.html",
                                          qr_code_file=f"{username}.png",
                                          text_center=True,
@@ -276,6 +302,7 @@ class TestApp(FlaskAppBase):
                                          failed=True,
                                          msg="")
 
+    @in_try_catch
     def actual_verify(self, username: str, verification_id: str):
         """
         Verify user
@@ -317,6 +344,7 @@ class TestApp(FlaskAppBase):
 
         return result
 
+    @in_try_catch
     def actual_verify_your_test(self, test_id: str, username: str):
         """
         Return verification page to verify student
@@ -336,13 +364,15 @@ class TestApp(FlaskAppBase):
                                      failed=True,
                                      msg=f"Failed to verify student for test: {test_id}")
 
+    @in_try_catch
     def actual_add_test(self):
         """
         Add test to test container
 
         REST API: /AddTest
 
-        :return: {"status": "success"} in case of success and {"status": "failure"} O.W.
+        :return: {"verdict": True} in case of success and {"verdict": False} O.W.
+
         """
         try:
             self._test_container.add_test(Test().from_json(flask.request.get_json()))
@@ -351,6 +381,7 @@ class TestApp(FlaskAppBase):
             ScholappLogger.error(traceback.format_exc())
             return flask.jsonify({"status": "failure"})
 
+    @in_try_catch
     def actual_login(self):
         """
         Login the user
@@ -363,6 +394,8 @@ class TestApp(FlaskAppBase):
         password = flask.request.form["password"]
         test_key = flask.request.form["testKey"]
         test_id = flask.request.form["testId"]
+
+        TestApp._verify_login_details({"username": username, "password": password})
 
         redirect_url_id = uuid.uuid4()
         self._user_redirects[username] = {
@@ -379,11 +412,13 @@ class TestApp(FlaskAppBase):
         return resp
 
     @staticmethod
+    @in_try_catch
     def _login_page():
         # "/"
         return flask.render_template("login_page.html",
                                      text_center=False)
 
+    @in_try_catch
     def actual_should_check_pc(self, test_id: str):
         """
         Check if the user should check his pc
@@ -394,7 +429,7 @@ class TestApp(FlaskAppBase):
         :return: True - if should check PC
         """
         login_details = flask.request.get_json()
-        self._verify_login_details(login_details)
+        TestApp._verify_login_details(login_details)
         username = login_details["username"]
         test = self._test_container.get_test_by_id(test_id)
         participant = test.Participants[username]
@@ -403,6 +438,7 @@ class TestApp(FlaskAppBase):
         return result
 
     @classmethod
+    @in_try_catch
     def actual_create_key(cls):
         """
         Create key for test
@@ -422,6 +458,7 @@ class TestApp(FlaskAppBase):
                 data_for_id += f":key:{key}:val:{val}:"
         return uuid.uuid5(uuid.NAMESPACE_DNS, data_for_id)
 
+    @in_try_catch
     def actual_add_participant(self, test_id: str):
         """
         Add test participant
@@ -429,22 +466,21 @@ class TestApp(FlaskAppBase):
         REST API: /AddParticipant/<test_id>
 
         :param test_id: test id to add participant to
-        :return: {"status": "success"} in case of success and {"status": "failure"} O.W.
+        :return: {"verdict": True} in case of success and {"verdict": False} O.W.
+
         """
-        try:
-            login_details = flask.request.get_json()
-            self._verify_login_details(login_details)
-            username = login_details["username"]
-            test = self._test_container.get_test_by_id(test_id)
-            test.add_participant(username)
-            return flask.jsonify({"status": "success"})
-        except Exception:
-            ScholappLogger.error(traceback.format_exc())
-            return flask.jsonify({"status": "failure"})
+        login_details = flask.request.get_json()
+        TestApp._verify_login_details(login_details)
+        username = login_details["username"]
+        test = self._test_container.get_test_by_id(test_id)
+        test.add_participant(username)
+        return flask.jsonify({"verdict": True})
 
-    def _verify_login_details(self, login_details):
-        pass
+    @staticmethod
+    def _verify_login_details(login_details):
+        assert ServerLogin.login(login_details["username"], login_details["password"])
 
+    @in_try_catch
     def actual_mark_user_pc_for_check(self, test_id, username):
         """
         Mark a user to check his PC
@@ -453,18 +489,16 @@ class TestApp(FlaskAppBase):
 
         :param test_id: test id
         :param username: username
-        :return: {"status": "success"} in case of success and {"status": "failure"} O.W.
-        """
-        try:
-            login_details = flask.request.get_json()
-            self._verify_login_details(login_details)
-            test = self._test_container.get_test_by_id(test_id)
-            test[username]["should_check"] = True
-            return flask.jsonify({"status": "success"})
-        except Exception:
-            ScholappLogger.error(traceback.format_exc())
-            return flask.jsonify({"status": "failure"})
+        :return: {"verdict": True} in case of success and {"verdict": False} O.W.
 
+        """
+        login_details = flask.request.get_json()
+        TestApp._verify_login_details(login_details)
+        test = self._test_container.get_test_by_id(test_id)
+        test[username]["should_check"] = True
+        return flask.jsonify({"verdict": True})
+
+    @in_try_catch
     def actual_is_user_ok(self, test_id, username):
         """
         Validate whether the user is ok
@@ -473,67 +507,64 @@ class TestApp(FlaskAppBase):
 
         :param test_id: test id
         :param username: user name
-        :return: {"status": "success"} in case of success and {"status": "failure"} O.W.
-        """
-        try:
-            login_details = flask.request.get_json()
-            self._verify_login_details(login_details)
-            test = self._test_container.get_test_by_id(test_id)
-            test[username]["should_check"] = True
-            return flask.jsonify({"is_ok": test[username]["is_ok"], "status": "success"})
-        except Exception:
-            ScholappLogger.error(traceback.format_exc())
-            return flask.jsonify({"status": "failure"})
+        :return: {"verdict": True} in case of success and {"verdict": False} O.W.
 
+        """
+        login_details = flask.request.get_json()
+        TestApp._verify_login_details(login_details)
+        test = self._test_container.get_test_by_id(test_id)
+        test[username]["should_check"] = True
+        return flask.jsonify({"is_ok": test[username]["is_ok"], "verdict": True})
+
+    @in_try_catch
     def actual_submit_user_is_invalid(self, test_id, username):
         """
         Submit that the user is not valid
 
         :param username: username
         :param test_id: test id
-        :return: {"status": "success"} in case of success and {"status": "failure"} O.W.
+        :return: {"verdict": True} in case of success and {"verdict": False} O.W.
+
         """
         return self._change_is_ok(test_id, username, False)
 
+    @in_try_catch
     def actual_submit_user_is_valid(self, test_id, username):
         """
         Submit that the user is valid
 
         :param username: username
         :param test_id: test id
-        :return: {"status": "success"} in case of success and {"status": "failure"} O.W.
+        :return: {"verdict": True} in case of success and {"verdict": False} O.W.
         """
         return self._change_is_ok(test_id, username)
 
     def _change_is_ok(self, test_id, username, val: bool = True):
         login_details = flask.request.get_json()
-        self._verify_login_details(login_details)
+        TestApp._verify_login_details(login_details)
         test = self._test_container.get_test_by_id(test_id)
         test[username]["is_ok"] = val
-        return flask.jsonify({"status": "success"})
+        return flask.jsonify({"verdict": True})
 
+    @in_try_catch
     def actual_submit_test(self):
         """
         Submit the test
 
         REST API: /SubmitTest
 
-        :return: {"status": "success"} in case of success and {"status": "failure"} O.W.
+        :return: {"verdict": True} in case of success and {"verdict": False} O.W.
         """
-        try:
-            submitted_test = flask.request.get_json()
-            self._verify_login_details(submitted_test)
-            test_submit_folder = self._submitted_tests_dir / submitted_test["test_id"]
-            if not test_submit_folder.is_dir():
-                test_submit_folder.mkdir()
+        submitted_test = flask.request.get_json()
+        TestApp._verify_login_details(submitted_test)
+        test_submit_folder = self._submitted_tests_dir / submitted_test["test_id"]
+        if not test_submit_folder.is_dir():
+            test_submit_folder.mkdir()
 
-            # We delete before saving
-            if "password" in submitted_test:
-                del submitted_test["password"]
-            student_submit_file = test_submit_folder / f"{submitted_test['username']}.json"
-            with open(student_submit_file, "w") as student_submit_file_open:
-                student_submit_file_open.write(json.dumps(submitted_test, sort_keys=True, indent=4))
-            return flask.jsonify({"status": "success"})
-        except Exception:
-            ScholappLogger.error(traceback.format_exc())
-            return flask.jsonify({"status": "failure"})
+        # We delete before saving
+        if "password" in submitted_test:
+            del submitted_test["password"]
+        student_submit_file = test_submit_folder / f"{submitted_test['username']}.json"
+        with open(student_submit_file, "w") as student_submit_file_open:
+            student_submit_file_open.write(json.dumps(submitted_test, sort_keys=True, indent=4))
+        return flask.jsonify({"verdict": True})

@@ -1,0 +1,81 @@
+[28-Apr-21 09:43:10] [Scholapp server] [Process: 7104] [Scholapp] - INFO - Setting up flask_microservices.test_microservice.test_app
+[28-Apr-21 09:43:10] [Scholapp server] [Process: 7104] [Scholapp] - INFO - Setting up was successful
+[28-Apr-21 09:43:15] [Scholapp server] [Process: 13476] [Scholapp] - INFO - Setting up flask_microservices.test_microservice.test_app
+[28-Apr-21 09:43:15] [Scholapp server] [Process: 13476] [Scholapp] - INFO - Setting up was successful
+[28-Apr-21 09:43:28] [Scholapp server] [Process: 31728] [Scholapp] - INFO - Setting up flask_microservices.test_microservice.test_app
+[28-Apr-21 09:43:28] [Scholapp server] [Process: 31728] [Scholapp] - INFO - Setting up was successful
+[28-Apr-21 09:44:25] [Scholapp server] [Process: 31556] [Scholapp] - INFO - Setting up flask_microservices.test_microservice.test_app
+[28-Apr-21 09:44:25] [Scholapp server] [Process: 31556] [Scholapp] - INFO - Setting up was successful
+[28-Apr-21 09:45:39] [Scholapp server] [Process: 11044] [Scholapp] - INFO - Setting up flask_microservices.test_microservice.test_app
+[28-Apr-21 09:46:18] [Scholapp server] [Process: 30956] [Scholapp] - INFO - Setting up flask_microservices.test_microservice.test_app
+[28-Apr-21 09:47:05] [Scholapp server] [Process: 31296] [Scholapp] - INFO - Setting up flask_microservices.test_microservice.test_app
+[28-Apr-21 09:54:26] [Scholapp server] [Process: 23596] [Scholapp] - INFO - Setting up flask_microservices.test_microservice.test_app
+[28-Apr-21 09:54:26] [Scholapp server] [Process: 23596] [Scholapp] - INFO - Setting up was successful
+[28-Apr-21 09:54:43] [Scholapp server] [Process: 31508] [Scholapp] - INFO - Setting up flask_microservices.test_microservice.test_app
+[28-Apr-21 09:54:43] [Scholapp server] [Process: 31508] [Scholapp] - INFO - Setting up was successful
+[28-Apr-21 09:55:13] [Scholapp server] [Process: 31508] [Scholapp] - ERROR - Traceback (most recent call last):
+  File "C:\Users\Idan Cohen\AppData\Roaming\Python\Python38\site-packages\urllib3\connection.py", line 159, in _new_conn
+    conn = connection.create_connection(
+  File "C:\Users\Idan Cohen\AppData\Roaming\Python\Python38\site-packages\urllib3\util\connection.py", line 84, in create_connection
+    raise err
+  File "C:\Users\Idan Cohen\AppData\Roaming\Python\Python38\site-packages\urllib3\util\connection.py", line 74, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Idan Cohen\AppData\Roaming\Python\Python38\site-packages\urllib3\connectionpool.py", line 670, in urlopen
+    httplib_response = self._make_request(
+  File "C:\Users\Idan Cohen\AppData\Roaming\Python\Python38\site-packages\urllib3\connectionpool.py", line 392, in _make_request
+    conn.request(method, url, **httplib_request_kw)
+  File "C:\Users\Idan Cohen\AppData\Local\Programs\Python\Python38\lib\http\client.py", line 1240, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "C:\Users\Idan Cohen\AppData\Local\Programs\Python\Python38\lib\http\client.py", line 1286, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "C:\Users\Idan Cohen\AppData\Local\Programs\Python\Python38\lib\http\client.py", line 1235, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "C:\Users\Idan Cohen\AppData\Local\Programs\Python\Python38\lib\http\client.py", line 1006, in _send_output
+    self.send(msg)
+  File "C:\Users\Idan Cohen\AppData\Local\Programs\Python\Python38\lib\http\client.py", line 946, in send
+    self.connect()
+  File "C:\Users\Idan Cohen\AppData\Roaming\Python\Python38\site-packages\urllib3\connection.py", line 187, in connect
+    conn = self._new_conn()
+  File "C:\Users\Idan Cohen\AppData\Roaming\Python\Python38\site-packages\urllib3\connection.py", line 171, in _new_conn
+    raise NewConnectionError(
+urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPConnection object at 0x00000279C3E502B0>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Idan Cohen\AppData\Roaming\Python\Python38\site-packages\requests\adapters.py", line 439, in send
+    resp = conn.urlopen(
+  File "C:\Users\Idan Cohen\AppData\Roaming\Python\Python38\site-packages\urllib3\connectionpool.py", line 726, in urlopen
+    retries = retries.increment(
+  File "C:\Users\Idan Cohen\AppData\Roaming\Python\Python38\site-packages\urllib3\util\retry.py", line 446, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='127.0.0.1', port=5001): Max retries exceeded with url: /Login (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x00000279C3E502B0>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Idan Cohen\PycharmProjects\final_project\Final-Project-Server\utilities\decorators\in_try_catch.py", line 11, in wrapper
+    return func(*args, **kwargs)
+  File "C:\Users\Idan Cohen\PycharmProjects\final_project\Final-Project-Server\flask_microservices\test_microservice\test_app.py", line 514, in actual_is_user_ok
+    TestApp._verify_login_details(login_details)
+  File "C:\Users\Idan Cohen\PycharmProjects\final_project\Final-Project-Server\flask_microservices\test_microservice\test_app.py", line 481, in _verify_login_details
+    assert ServerLogin.login(login_details["username"], login_details["password"])
+  File "C:\Users\Idan Cohen\PycharmProjects\final_project\Final-Project-Server\utilities\server_login\server_login.py", line 9, in login
+    response = requests.post(ServerLogin.SERVER, json={"username": username, "password": password})
+  File "C:\Users\Idan Cohen\AppData\Roaming\Python\Python38\site-packages\requests\api.py", line 119, in post
+    return request('post', url, data=data, json=json, **kwargs)
+  File "C:\Users\Idan Cohen\AppData\Roaming\Python\Python38\site-packages\requests\api.py", line 61, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "C:\Users\Idan Cohen\AppData\Roaming\Python\Python38\site-packages\requests\sessions.py", line 530, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\Idan Cohen\AppData\Roaming\Python\Python38\site-packages\requests\sessions.py", line 643, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\Idan Cohen\AppData\Roaming\Python\Python38\site-packages\requests\adapters.py", line 516, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=5001): Max retries exceeded with url: /Login (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x00000279C3E502B0>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it'))
+

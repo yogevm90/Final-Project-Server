@@ -15,6 +15,7 @@ from flask_microservices.chat_microservice.teacher_chat_session import TeacherCh
 from server.interfaces.jsonable import Jsonable
 from flask_microservices.flask_executor.flask_app_base import FlaskAppBase
 from utilities.logging.scholapp_server_logger import ScholappLogger
+from utilities.server_login.server_login import ServerLogin
 
 DEFAULT = "default"
 TEACHER_COOKIE_KEY = "scholappteacher"
@@ -92,13 +93,12 @@ class ChatApp(FlaskAppBase):
             return self.actual_get_response()
 
     def _verify_login_details(self, username, password, is_teacher=False):
-        return True
+        return ServerLogin.login(username, password, is_teacher)
 
     @staticmethod
     def _test_is_verified(username, test_id):
-        # response = requests.get(f"http://127.0.0.1:5000/{test_id}/{username}")
-        # return response.json()["verified"]
-        return True
+        response = requests.get(f"http://127.0.0.1:5000/{test_id}/{username}")
+        return response.json()["verified"]
 
     def actual_open_session(self, is_teacher=False):
         json_data = flask.request.get_json()
