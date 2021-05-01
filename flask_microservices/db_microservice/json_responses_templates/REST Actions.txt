@@ -22,17 +22,6 @@ Response:
 }
 
 Request:
-/ChangePassword - {
-    "username": str
-    "password": str
-    "new_password": str
-}
-Response:
-{
-    "verdict": bool
-}
-
-Request:
 /GetClasses - {
     "username": str,
     "password": str
@@ -40,44 +29,13 @@ Request:
 Response:
 List:
 {
-    "name": str
-    "id": str
-    "description": str
-    "time": str
-}
-
-Request:
-/SetClass/<method>/<class_data> - {
-    "username": str,
-    "password": str,
-    "details": {}
-}
-"method": "ByName" \ "ById"
-class_data: str
-Response:
-{
-    "verdict": bool
-    "class_document": {}
+    class_document
 }
 
 Request:
 /GetUser/<method>/<user_data> - {
     "username": str,
     "password": str,
-}
-"method": "ByName" \ "ById"
-user_data: str
-Response:
-{
-    "verdict": bool
-    "user_document": {}
-}
-
-Request:
-/SetUser/<method>/<user_data> - {
-    "username": str,
-    "password": str,
-    "details": {}
 }
 "method": "ByName" \ "ById"
 user_data: str
@@ -131,35 +89,26 @@ Response:
 }
 
 Request:
-/CreateClass - {
-    "username": str,
-    "password": str,
-    "teacher": str,
-    "img_path": str,
-    "name": str,
-    "description": str,
-    "external_links": str,
-    "homework_links": str,
-    "updates": str,
-    "tests_ids": LIST[ID],
-    "participants": LIST[ID],
-    "start": str,
-    "end": str,
-    "day": int [between 1 - 7]
-}
-Response:
-{
-    "verdict": bool
-    "class_document": {}
-}
-
-Request:
 /Details - {    #Optional -  class or user
     "username": str,
     "password": str,
     "data": {
-        "class": {}
-        "user": {}
+        "username": str,
+        "new_password": str,
+        "name": str,
+        "surname": str,
+        "class_name": str,
+        "teacher": str,
+        "img_path": str,
+        "description": str,
+        "external_links": str,
+        "homework_links": str,
+        "updates": str,
+        "tests_ids": LIST[ID],
+        "participants": LIST[ID],
+        "start": str,
+        "end": str,
+        "day": int [between 1 - 7]
     }
 }
 Response:
