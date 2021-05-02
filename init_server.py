@@ -11,7 +11,7 @@ classes_col = mydb["classes"]
 users_col.remove()
 classes_col.remove()
 
-class1_query = {'name': 'math', 'class_id': '00003', 'teacher': 'admin', 'description': 'math class', 'external_links': ['www.google.com', 'www.facebook.com'], 'homework_links': ['www.ynet.co.il'], 'updates': ['update 1', 'update 2'], 'test_ids': [], 'participants': ['yogevm90', 'idan57'], 'stream_paths': [{'id': '00001', 'video': '/project/upload/video/00001', 'audio': '/project/upload/audio/00001'}, {'id': '00002', 'video': '/project/upload/video/00002', 'audio': '/project/upload/audio/00002'}], 'day': 1, 'hour': '12', 'img_path': 'www.walla.co.il' }
+class1_query = {'class_name': 'math', 'class_id': '00003', 'teacher': 'admin', 'description': 'math class', 'external_links': ['www.google.com', 'www.facebook.com'], 'homework_links': ['www.ynet.co.il'], 'updates': ['update 1', 'update 2'], 'test_ids': [], 'participants': ['yogevm90', 'idan57'], 'stream_paths': [{'id': '00001', 'video': '/project/upload/video/00001', 'audio': '/project/upload/audio/00001'}, {'id': '00002', 'video': '/project/upload/video/00002', 'audio': '/project/upload/audio/00002'}], 'day': 1, 'hour': '12', 'img_path': 'www.walla.co.il' }
 
 yogev_pass = "yogev"
 idan_pass = "idan"
