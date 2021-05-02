@@ -2,6 +2,8 @@ import flask
 
 from flask_microservices.flask_executor.flask_app_base import FlaskAppBase
 from server.database_manager.exception_types import QueryException
+from server.stream_manager import stream_manager
+from server.stream_manager.exceptions import StreamUserException
 from utilities.logging.scholapp_server_logger import ScholappLogger
 from server.database_manager.authentication_manager.authentication_manager import AuthenticationManager
 from server.database_manager.data_manager.database_data_manager import DatabaseDataManager
@@ -63,10 +65,13 @@ class DBApp(FlaskAppBase):
                 if request_data['role'] not in self.valid_roles:
                     return flask.jsonify({'verdict': False, 'reason': 'invalid role given'})
                 self._db_data_manager.insert_user(request_data)
+                stream_manager.add_user(request_data['username'], request_data['password'])
                 user_document = self.student_by_name(request_data['username'])
                 return flask.jsonify({'verdict': True, 'user_document': user_document})
 
             except QueryException as e:
+                return flask.jsonify({'verdict': False, 'reason': '{}'.format(e.message)})
+            except StreamUserException as e:
                 return flask.jsonify({'verdict': False, 'reason': '{}'.format(e.message)})
 
         @self.route("/GetClasses", methods=["POST"])
@@ -94,6 +99,7 @@ class DBApp(FlaskAppBase):
                     user_doc = self.student_by_name(data['username'])
                     if bool(data['new_password']):
                         user_doc['password'] = self._db_auth_manager.get_hashed_password(request_data['new_password'])
+                        stream_manager.change_password(data['username'], data['new_password'])
                     else:
                         # assign new user data from client
                         for key in data:
@@ -131,6 +137,8 @@ class DBApp(FlaskAppBase):
                     return flask.jsonify({'verdict': False, 'reason': 'Wrong data format'})
 
             except QueryException as e:
+                return flask.jsonify({'verdict': False, 'reason': '{}'.format(e.message)})
+            except StreamUserException as e:
                 return flask.jsonify({'verdict': False, 'reason': '{}'.format(e.message)})
 
         @self.route("/GetClassroomPaths", methods=["POST"])
