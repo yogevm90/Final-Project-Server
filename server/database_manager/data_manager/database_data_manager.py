@@ -37,6 +37,8 @@ class DatabaseDataManager(object):
     def get_classes_by_username(self, username: str):
         user_doc = self.get_user_by_name(username)
         classes = [self.get_class_by_id(class_id) for class_id in user_doc['classes']]
+        for class_doc in classes:
+            class_doc.pop('_id')
         return classes
 
     def insert_user(self, user_data: dict):
