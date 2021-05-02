@@ -36,7 +36,8 @@ class DatabaseDataManager(object):
 
     def get_classes_by_username(self, username: str):
         user_doc = self.get_user_by_name(username)
-        return user_doc['classes']
+        classes = [self.get_class_by_id(class_id) for class_id in user_doc['classes']]
+        return classes
 
     def insert_user(self, user_data: dict):
         if self.user_exists(user_data['username']):
