@@ -105,8 +105,11 @@ class TestApp(FlaskAppBase):
             :param test_id: test id
             :return: the test found
             """
-            TestApp._verify_login_details(flask.request.get_json())
-            return flask.jsonify({"verdict": True, "test": self._test_container.Tests[test_id].json()})
+            try:
+                TestApp._verify_login_details(flask.request.get_json())
+                return flask.jsonify({"verdict": True, "test": self._test_container.Tests[test_id].json()})
+            except Exception:
+                return flask.jsonify({"verdict": False}), 404
 
         @self.route("/GetTestByClassId/<class_id>", methods=["POST"])
         def get_test_by_class_id(class_id: str):
@@ -114,13 +117,16 @@ class TestApp(FlaskAppBase):
             :param class_id class id
             :return: the tests found
             """
-            TestApp._verify_login_details(flask.request.get_json())
-            tests = []
-            for test in self._test_container.Tests.values():
-                if test.Classroom == class_id:
-                    tests += [test]
+            try:
+                TestApp._verify_login_details(flask.request.get_json())
+                tests = []
+                for test in self._test_container.Tests.values():
+                    if test.Classroom == class_id:
+                        tests += [test]
 
-            return flask.jsonify({"verdict": True, "tests": tests})
+                return flask.jsonify({"verdict": True, "tests": tests})
+            except Exception:
+                return flask.jsonify({"verdict": False}), 404
 
         @self.route("/VerifyTest", methods=["POST"])
         def verify():
@@ -148,9 +154,7 @@ class TestApp(FlaskAppBase):
             Add new test
 
             :return: {"verdict": True} in case of success and {"verdict": False} O.W.
-
             """
-            TestApp._verify_login_details(flask.request.get_json())
             return self.actual_add_test()
 
         @self.route("/AddParticipant/<test_id>", methods=["POST"])
@@ -374,12 +378,9 @@ class TestApp(FlaskAppBase):
         :return: {"verdict": True} in case of success and {"verdict": False} O.W.
 
         """
-        try:
-            self._test_container.add_test(Test().from_json(flask.request.get_json()))
-            return flask.jsonify({"status": "success"})
-        except Exception:
-            ScholappLogger.error(traceback.format_exc())
-            return flask.jsonify({"status": "failure"})
+        TestApp._verify_login_details(flask.request.get_json())
+        self._test_container.add_test(Test().from_json(flask.request.get_json()))
+        return flask.jsonify({"status": "success"})
 
     @in_try_catch
     def actual_login(self):
@@ -478,7 +479,8 @@ class TestApp(FlaskAppBase):
 
     @staticmethod
     def _verify_login_details(login_details):
-        assert ServerLogin.login(login_details["username"], login_details["password"])
+        assert ServerLogin.login(login_details["username"], login_details["password"]), \
+            "Unable to login into the server"
 
     @in_try_catch
     def actual_mark_user_pc_for_check(self, test_id, username):

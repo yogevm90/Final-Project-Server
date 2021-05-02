@@ -92,7 +92,8 @@ class ChatApp(FlaskAppBase):
         def student_get_messages():
             return self.actual_get_response()
 
-    def _verify_login_details(self, username, password, is_teacher=False):
+    @staticmethod
+    def _verify_login_details(username, password, is_teacher=False):
         return ServerLogin.login(username, password, is_teacher)
 
     @staticmethod
@@ -103,8 +104,8 @@ class ChatApp(FlaskAppBase):
     def actual_open_session(self, is_teacher=False):
         json_data = flask.request.get_json()
 
-        logged_in = self._verify_login_details(username=json_data["username"], password=json_data["password"],
-                                               is_teacher=is_teacher)
+        logged_in = ChatApp._verify_login_details(username=json_data["username"], password=json_data["password"],
+                                                  is_teacher=is_teacher)
 
         if not logged_in:
             return flask.jsonify({"status": "Username and Password verification failed!"})
