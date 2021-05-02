@@ -59,14 +59,16 @@ class DBApp(FlaskAppBase):
         @self.route("/Register", methods=["POST"])
         def register():
             request_data = flask.request.get_json()
-            if self._db_data_manager.user_exists(request_data['username']):
+            username = request_data['username']
+            password = request_data['password']
+            if self._db_data_manager.user_exists(username):
                 return flask.jsonify({'verdict': False, 'reason': 'user already exists'})
             try:
                 if request_data['role'] not in self.valid_roles:
                     return flask.jsonify({'verdict': False, 'reason': 'invalid role given'})
                 self._db_data_manager.insert_user(request_data)
-                stream_manager.add_user(request_data['username'], request_data['password'])
-                user_document = self.student_by_name(request_data['username'])
+                stream_manager.add_user(username, password)
+                user_document = self.student_by_name(username)
                 return flask.jsonify({'verdict': True, 'user_document': user_document})
 
             except QueryException as e:
