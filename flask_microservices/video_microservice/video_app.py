@@ -17,7 +17,6 @@ class ImagesContainer(object):
     def get_image(self, user):
         if user in self._images and len(self._images[user]) > 0:
             img_copy = deepcopy(self._images[user][0])
-            del self._images[user][0]
             return img_copy
 
     def add_image(self, image, user):
