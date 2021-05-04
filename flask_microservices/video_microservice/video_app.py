@@ -15,20 +15,10 @@ class ImagesContainer(object):
 
     def get_image(self, user):
         if user in self._images:
-            self._images[user]["lock"].acquire()
-            image = self._images[user]["image"]
-            self._images[user]["lock"].release()
-            return image
+            return self._images[user]
 
     def add_image(self, image, user):
-        if user not in self._images:
-            self._images[user] = {
-                "image": bytearray(),
-                "lock": Lock()
-            }
-        self._images[user]["lock"].acquire()
-        self._images[user]["image"] = image
-        self._images[user]["lock"].release()
+        self._images[user] = image
 
 
 class VideoApp(FlaskAppBase):
