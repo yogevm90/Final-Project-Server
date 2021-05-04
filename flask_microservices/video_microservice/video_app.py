@@ -3,7 +3,7 @@ from pathlib import Path
 from threading import Lock
 
 import flask
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 from flask_microservices.flask_executor.flask_app_base import FlaskAppBase
 from utilities.logging.scholapp_server_logger import ScholappLogger
@@ -56,6 +56,7 @@ class VideoApp(FlaskAppBase):
         """
 
         @self.route("/GetImage/<user>")
+        @cross_origin()
         def get_img(user):
             image = self._images.get_image(user)
             if image:
