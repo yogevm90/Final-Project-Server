@@ -21,7 +21,7 @@ class ImagesContainer(object):
             return img_copy
 
     def add_image(self, image, user):
-        if user not in self._images:
+        if user in self._images:
             self._images[user] = []
         self._images[user] += [image]
 
