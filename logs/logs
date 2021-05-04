@@ -79,3 +79,25 @@ Traceback (most recent call last):
     raise ConnectionError(e, request=request)
 requests.exceptions.ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=5001): Max retries exceeded with url: /Login (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x00000279C3E502B0>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it'))
 
+[04-May-21 23:04:32] [Scholapp server] [Process: 12380] [Scholapp] - INFO - Setting up flask_microservices.video_microservice.video_app
+[04-May-21 23:04:32] [Scholapp server] [Process: 12380] [Scholapp] - INFO - Setting up was successful
+[04-May-21 23:07:33] [Scholapp server] [Process: 9852] [Scholapp] - INFO - Setting up flask_microservices.video_microservice.video_app
+[04-May-21 23:07:33] [Scholapp server] [Process: 9852] [Scholapp] - INFO - Setting up was successful
+[04-May-21 23:12:27] [Scholapp server] [Process: 12180] [Scholapp] - INFO - Setting up flask_microservices.video_microservice.video_app
+[04-May-21 23:12:27] [Scholapp server] [Process: 12180] [Scholapp] - INFO - Setting up was successful
+[04-May-21 23:13:26] [Scholapp server] [Process: 9916] [Scholapp] - INFO - Setting up flask_microservices.video_microservice.video_app
+[04-May-21 23:13:26] [Scholapp server] [Process: 9916] [Scholapp] - INFO - Setting up was successful
+[04-May-21 23:14:26] [Scholapp server] [Process: 14808] [Scholapp] - INFO - Setting up flask_microservices.video_microservice.video_app
+[04-May-21 23:14:26] [Scholapp server] [Process: 14808] [Scholapp] - INFO - Setting up was successful
+[04-May-21 23:15:56] [Scholapp server] [Process: 5168] [Scholapp] - INFO - Setting up flask_microservices.video_microservice.video_app
+[04-May-21 23:15:56] [Scholapp server] [Process: 5168] [Scholapp] - INFO - Setting up was successful
+[04-May-21 23:17:37] [Scholapp server] [Process: 14660] [Scholapp] - INFO - Setting up flask_microservices.video_microservice.video_app
+[04-May-21 23:17:37] [Scholapp server] [Process: 14660] [Scholapp] - INFO - Setting up was successful
+[04-May-21 23:19:09] [Scholapp server] [Process: 20008] [Scholapp] - INFO - Setting up flask_microservices.video_microservice.video_app
+[04-May-21 23:19:09] [Scholapp server] [Process: 20008] [Scholapp] - INFO - Setting up was successful
+[04-May-21 23:21:05] [Scholapp server] [Process: 13900] [Scholapp] - INFO - Setting up flask_microservices.video_microservice.video_app
+[04-May-21 23:21:05] [Scholapp server] [Process: 13900] [Scholapp] - INFO - Setting up was successful
+[04-May-21 23:21:35] [Scholapp server] [Process: 17744] [Scholapp] - INFO - Setting up flask_microservices.video_microservice.video_app
+[04-May-21 23:21:35] [Scholapp server] [Process: 17744] [Scholapp] - INFO - Setting up was successful
+[04-May-21 23:22:43] [Scholapp server] [Process: 22448] [Scholapp] - INFO - Setting up flask_microservices.video_microservice.video_app
+[04-May-21 23:22:43] [Scholapp server] [Process: 22448] [Scholapp] - INFO - Setting up was successful
