@@ -41,7 +41,7 @@ class VideoApp(FlaskAppBase):
         self._compress = Compress()
         self._compress.init_app(self)
         default_img_path = os.path.join("static", "default.jpg")
-        with open(default_img_path, "wb") as default_img:
+        with open(default_img_path, "rb") as default_img:
             self._default_img = default_img.read()
         self._setup()
         ScholappLogger.info(f"Setting up was successful")

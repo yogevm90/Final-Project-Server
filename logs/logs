@@ -101,3 +101,6 @@ requests.exceptions.ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=5
 [04-May-21 23:21:35] [Scholapp server] [Process: 17744] [Scholapp] - INFO - Setting up was successful
 [04-May-21 23:22:43] [Scholapp server] [Process: 22448] [Scholapp] - INFO - Setting up flask_microservices.video_microservice.video_app
 [04-May-21 23:22:43] [Scholapp server] [Process: 22448] [Scholapp] - INFO - Setting up was successful
+[07-May-21 12:22:07] [Scholapp server] [Process: 5028] [Scholapp] - INFO - Setting up flask_microservices.video_microservice.video_app
+[07-May-21 12:22:27] [Scholapp server] [Process: 19452] [Scholapp] - INFO - Setting up flask_microservices.video_microservice.video_app
+[07-May-21 12:22:52] [Scholapp server] [Process: 10220] [Scholapp] - INFO - Setting up flask_microservices.video_microservice.video_app
