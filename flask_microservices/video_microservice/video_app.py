@@ -1,9 +1,7 @@
 import os
-from copy import deepcopy
-from pathlib import Path
-from threading import Lock
 
 import flask
+from flask_compress import Compress
 from flask_cors import CORS, cross_origin
 
 from flask_microservices.flask_executor.flask_app_base import FlaskAppBase
@@ -40,6 +38,11 @@ class VideoApp(FlaskAppBase):
         ScholappLogger.info(f"Setting up {import_name}")
         CORS(self, resources={r"/GetImage": {"origins": "*"}})
         self._images = ImagesContainer()
+        self._compress = Compress()
+        self._compress.init_app(self)
+        default_img_path = os.path.join("static", "default.jpg")
+        with open(default_img_path, "wb") as default_img:
+            self._default_img = default_img.read()
         self._setup()
         ScholappLogger.info(f"Setting up was successful")
 
@@ -50,14 +53,16 @@ class VideoApp(FlaskAppBase):
 
         @self.route("/GetImage/<user>")
         @cross_origin()
+        @self._compress.compressed()
         def get_img(user):
             image = self._images.get_image(user)
             if image:
-                return flask.Response(self._images.get_image(user), mimetype="image/jpg")
+                return flask.Response(image, mimetype="image/jpg")
             else:
-                return flask.redirect("/static/default.jpg")
+                return flask.Response(self._default_img, mimetype="image/jpg")
 
         @self.route("/UploadImage/<user>", methods=["POST"])
+        @self._compress.compressed()
         def upload_img(user):
             self._images.add_image(flask.request.data, user)
             return flask.jsonify({"verdict": True})
