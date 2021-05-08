@@ -1,5 +1,4 @@
 import copy
-import json
 import os
 import pickle
 import uuid
@@ -175,7 +174,7 @@ class Test(Serializable, Jsonable):
         if len(json_val["questions"]) == 0:
             raise Exception("The questions cannot be an empty list!!!")
         self._questions = [Question().from_json(q) for q in json_val["questions"]]
-        self._classroom = json.loads(json_val["classroom"])
+        self._classroom = json_val["classroom"]
         self._teacher = json_val["teacher"]
         self._participants = json_val["participants"]
         self._name = json_val["name"]
