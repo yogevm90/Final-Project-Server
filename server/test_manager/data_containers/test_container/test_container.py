@@ -38,6 +38,7 @@ class TestContainer(Serializable, Jsonable):
         self._mutex.acquire()
         self._tests[test.TestId] = test
         self._tests_dict[test.TestId] = test.PickledFilePath
+        self._serialize_json()
         self._mutex.release()
 
     def add_tests(self, tests: List[Test]):

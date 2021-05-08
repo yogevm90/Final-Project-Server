@@ -178,6 +178,7 @@ class Test(Serializable, Jsonable):
                                        f"{self._teacher}+{self._classroom}+{str(self._questions)}+"
                                        f"{str(self._participants)}+{self._name}+{self._start}+"
                                        f"{self._end}+{uuid.uuid4()}"))
+        self.serialize()
         return self
 
     def json(self):

@@ -37,7 +37,7 @@ class TestApp(FlaskAppBase):
         self._user_redirects = {}
         self._setup()
         self._cookies = {}
-        self._test_container = TestContainer()
+        self._test_container = TestContainer(deserialize=True)
         self._qr_code_generator = QRCodeCreator()
         self._port = -1
         self._submitted_tests_dir = Path(os.path.dirname(__file__)) / "submitted_tests"
