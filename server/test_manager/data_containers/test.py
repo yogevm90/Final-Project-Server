@@ -8,6 +8,7 @@ from typing import List, Dict
 from server.interfaces.jsonable import Jsonable
 from server.test_manager.data_containers.interfaces.serializable import Serializable
 from server.test_manager.data_containers.question import Question
+from utilities.logging.scholapp_server_logger import ScholappLogger
 
 
 class Test(Serializable, Jsonable):
@@ -132,7 +133,7 @@ class Test(Serializable, Jsonable):
         Serialize the object
         """
         pickled_file = Path(self._get_pickled_file_path())
-        if pickled_file.is_file():
+        if not pickled_file.is_file():
             pickled_file.touch()
         with open(pickled_file, "wb") as pickled_file:
             pickle.dump(self, pickled_file)
@@ -155,7 +156,10 @@ class Test(Serializable, Jsonable):
         return self
 
     def _get_pickled_file_path(self):
-        return Path(os.path.join(os.path.dirname(__file__), "pickled_tests", f"{self._test_id}.bin"))
+        pickled_tests = Path(os.path.join(os.path.dirname(__file__), "pickled_tests"))
+        if not pickled_tests.is_dir():
+            pickled_tests.mkdir()
+        return pickled_tests / f"{self._test_id}.bin"
 
     def from_json(self, json_val: Dict):
         """
@@ -178,6 +182,7 @@ class Test(Serializable, Jsonable):
                                        f"{self._teacher}+{self._classroom}+{str(self._questions)}+"
                                        f"{str(self._participants)}+{self._name}+{self._start}+"
                                        f"{self._end}+{uuid.uuid4()}"))
+        ScholappLogger.info(f"Test added: {self._test_id}")
         self.serialize()
         return self
 
