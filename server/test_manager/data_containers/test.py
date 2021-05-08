@@ -173,7 +173,7 @@ class Test(Serializable, Jsonable):
         self._name = json_val["name"]
         self._start = json_val["start"]
         self._end = json_val["end"]
-        self._date = json_val["date"]
+        self._date = json_val["start"].split("T")[0]
         self._test_id = str(uuid.uuid3(uuid.NAMESPACE_DNS,
                                        f"{self._teacher}+{self._classroom}+{str(self._questions)}+"
                                        f"{str(self._participants)}+{self._name}+{self._start}+"
