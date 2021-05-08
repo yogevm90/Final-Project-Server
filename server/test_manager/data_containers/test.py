@@ -131,7 +131,7 @@ class Test(Serializable, Jsonable):
         """
         Serialize the object
         """
-        pickled_file = Path(self._path_to_pickled_file)
+        pickled_file = Path(self._get_pickled_file_path())
         if pickled_file.is_file():
             pickled_file.touch()
         with open(pickled_file, "wb") as pickled_file:
