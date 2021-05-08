@@ -121,6 +121,7 @@ class TestApp(FlaskAppBase):
                 TestApp._verify_login_details(flask.request.get_json())
                 tests = []
                 for test in self._test_container.Tests.values():
+                    ScholappLogger.info(test.Classroom)
                     if test.Classroom["class_id"] == class_id:
                         tests += [test]
 
