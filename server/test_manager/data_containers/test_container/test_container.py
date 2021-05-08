@@ -64,8 +64,11 @@ class TestContainer(Serializable, Jsonable):
             self._mutex.release()
 
     def _serialize_json(self):
+        to_save = {}
+        for test_id, path in self._tests_dict.items():
+            to_save[test_id] = str(path)
         with open(self._tests_json_path, "w") as tests_json:
-            json.dump(self._tests_dict, tests_json)
+            json.dump(to_save, tests_json)
 
     def json(self):
         return {
