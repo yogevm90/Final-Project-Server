@@ -7,6 +7,7 @@ from typing import Dict, List
 from server.interfaces.jsonable import Jsonable
 from server.test_manager.data_containers.interfaces.serializable import Serializable
 from server.test_manager.data_containers.test import Test
+from utilities.logging.scholapp_server_logger import ScholappLogger
 
 
 class TestContainer(Serializable, Jsonable):
@@ -36,6 +37,7 @@ class TestContainer(Serializable, Jsonable):
 
     def add_test(self, test: Test):
         self._mutex.acquire()
+        ScholappLogger.info(f"Added test {test.TestId} into the container")
         self._tests[test.TestId] = test
         self._tests_dict[test.TestId] = test.PickledFilePath
         self._serialize_json()
@@ -49,6 +51,7 @@ class TestContainer(Serializable, Jsonable):
         return self._tests[test_id]
 
     def serialize(self):
+        ScholappLogger.info("Serializing tests")
         for test in self._tests.values():
             self._mutex.acquire()
             test.serialize()
@@ -56,6 +59,7 @@ class TestContainer(Serializable, Jsonable):
         self._serialize_json()
 
     def deserialize(self):
+        ScholappLogger.info("Deserializing tests")
         for test_pickle_path in self._tests_dict.values():
             self._mutex.acquire()
             with open(test_pickle_path, "rb") as test_pickle_file:
@@ -64,6 +68,7 @@ class TestContainer(Serializable, Jsonable):
             self._mutex.release()
 
     def _serialize_json(self):
+        ScholappLogger.info(f"Serializing tests json to: {self._tests_json_path}")
         to_save = {}
         for test_id, path in self._tests_dict.items():
             to_save[test_id] = str(path)
