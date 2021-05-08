@@ -133,12 +133,12 @@ class Test(Serializable, Jsonable):
         """
         Serialize the object
         """
-        pickled_file = Path(self._set_pickled_file_path())
-        if not pickled_file.is_file():
-            pickled_file.touch()
+        self._set_pickled_file_path()
+        if not self._path_to_pickled_file.is_file():
+            self._path_to_pickled_file.touch()
         to_serialize = copy.deepcopy(self)
         to_serialize._path_to_pickled_file = str(self._path_to_pickled_file)
-        with open(pickled_file, "wb") as pickled_file:
+        with open(to_serialize._path_to_pickled_file, "wb") as pickled_file:
             pickle.dump(to_serialize, pickled_file)
 
     def deserialize(self):
