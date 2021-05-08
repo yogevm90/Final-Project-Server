@@ -1,0 +1,3 @@
+[08-May-21 22:34:31] [Scholapp server] [Process: 6996] [Scholapp] - INFO - Setting up flask_microservices.test_microservice.test_app
+[08-May-21 22:34:32] [Scholapp server] [Process: 6996] [Scholapp] - INFO - Deserializing tests
+[08-May-21 22:34:32] [Scholapp server] [Process: 6996] [Scholapp] - INFO - Setting up was successful

@@ -1,0 +1,13 @@
+[08-May-21 21:33:49] [Scholapp server] [Process: 6090] [Scholapp] - INFO - Setting up flask_microservices.test_microservice.test_app
+[08-May-21 21:33:49] [Scholapp server] [Process: 6090] [Scholapp] - INFO - Setting up was successful
+[08-May-21 21:34:14] [Scholapp server] [Process: 6090] [Scholapp] - ERROR - Traceback (most recent call last):
+  File "/home/idan/Desktop/final_proj/Final-Project-Server/utilities/decorators/in_try_catch.py", line 11, in wrapper
+    return func(*args, **kwargs)
+  File "/home/idan/Desktop/final_proj/Final-Project-Server/flask_microservices/test_microservice/test_app.py", line 382, in actual_add_test
+    self._test_container.add_test(Test().from_json(flask.request.get_json()))
+  File "/home/idan/Desktop/final_proj/Final-Project-Server/server/test_manager/data_containers/test.py", line 181, in from_json
+    self.serialize()
+  File "/home/idan/Desktop/final_proj/Final-Project-Server/server/test_manager/data_containers/test.py", line 137, in serialize
+    with open(pickled_file, "wb") as pickled_file:
+FileNotFoundError: [Errno 2] No such file or directory: '/home/idan/Desktop/final_proj/Final-Project-Server/server/test_manager/data_containers/pickled_tests/.bin'
+

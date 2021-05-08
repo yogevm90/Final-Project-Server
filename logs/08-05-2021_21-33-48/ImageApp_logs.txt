@@ -1,0 +1,2 @@
+[08-May-21 21:33:49] [Scholapp server] [Process: 6092] [Scholapp] - INFO - Setting up flask_microservices.image_saver_microservice.image_saver_app
+[08-May-21 21:33:49] [Scholapp server] [Process: 6092] [Scholapp] - INFO - Setting up was successful

@@ -1,0 +1,2 @@
+[08-May-21 21:02:03] [Scholapp server] [Process: 5915] [Scholapp] - INFO - Setting up flask_microservices.video_microservice.video_app
+[08-May-21 21:02:03] [Scholapp server] [Process: 5915] [Scholapp] - INFO - Setting up was successful

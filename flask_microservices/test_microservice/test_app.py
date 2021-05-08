@@ -121,12 +121,14 @@ class TestApp(FlaskAppBase):
                 TestApp._verify_login_details(flask.request.get_json())
                 tests = []
                 for test in self._test_container.Tests.values():
-                    class_to_check = json.loads(test.Classroom)
-                    if class_to_check["class_id"] == class_id:
-                        tests += [test]
+                    classroom = test.Classroom
+                    ScholappLogger.info(f"Checking classroom: {classroom['class_id']}")
+                    if classroom["class_id"] == class_id:
+                        tests += [test.json()]
 
                 return flask.jsonify({"verdict": True, "tests": tests})
-            except Exception:
+            except Exception as e:
+                ScholappLogger.info(str(e))
                 return flask.jsonify({"verdict": False}), 404
 
         @self.route("/VerifyTest", methods=["POST"])

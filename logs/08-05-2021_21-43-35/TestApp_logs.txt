@@ -1,0 +1,24 @@
+[08-May-21 21:43:37] [Scholapp server] [Process: 6236] [Scholapp] - INFO - Setting up flask_microservices.test_microservice.test_app
+[08-May-21 21:43:37] [Scholapp server] [Process: 6236] [Scholapp] - INFO - Setting up was successful
+[08-May-21 21:43:43] [Scholapp server] [Process: 6236] [Scholapp] - INFO - Test added: 97a2b2dc-cc1e-3293-842f-57cf5e2784ac
+[08-May-21 21:43:43] [Scholapp server] [Process: 6236] [Scholapp] - ERROR - Traceback (most recent call last):
+  File "/home/idan/Desktop/final_proj/Final-Project-Server/utilities/decorators/in_try_catch.py", line 11, in wrapper
+    return func(*args, **kwargs)
+  File "/home/idan/Desktop/final_proj/Final-Project-Server/flask_microservices/test_microservice/test_app.py", line 382, in actual_add_test
+    self._test_container.add_test(Test().from_json(flask.request.get_json()))
+  File "/home/idan/Desktop/final_proj/Final-Project-Server/server/test_manager/data_containers/test_container/test_container.py", line 41, in add_test
+    self._serialize_json()
+  File "/home/idan/Desktop/final_proj/Final-Project-Server/server/test_manager/data_containers/test_container/test_container.py", line 68, in _serialize_json
+    json.dump(self._tests_dict, tests_json)
+  File "/usr/lib/python3.8/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+  File "/usr/lib/python3.8/json/encoder.py", line 431, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/usr/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/usr/lib/python3.8/json/encoder.py", line 438, in _iterencode
+    o = _default(o)
+  File "/usr/lib/python3.8/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type PosixPath is not JSON serializable
+

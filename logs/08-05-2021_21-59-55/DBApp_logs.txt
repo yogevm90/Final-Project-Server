@@ -1,0 +1,2 @@
+[08-May-21 21:59:57] [Scholapp server] [Process: 6529] [Scholapp] - INFO - Setting up flask_microservices.db_microservice.db_app
+[08-May-21 21:59:57] [Scholapp server] [Process: 6529] [Scholapp] - INFO - Setting up was successful
