@@ -41,7 +41,8 @@ class Test(Serializable, Jsonable):
         self._teacher = teacher
         self._participants = {}
         self._name = name
-        self._path_to_pickled_file = self._set_pickled_file_path()
+        self._path_to_pickled_file = Path("")
+        self._set_pickled_file_path()
 
     @property
     def TestId(self):
@@ -161,7 +162,7 @@ class Test(Serializable, Jsonable):
         pickled_tests = Path(os.path.join(os.path.dirname(__file__), "pickled_tests"))
         if not pickled_tests.is_dir():
             pickled_tests.mkdir()
-        return pickled_tests / f"{self._test_id}.bin"
+        self._path_to_pickled_file = pickled_tests / f"{self._test_id}.bin"
 
     def from_json(self, json_val: Dict):
         """
@@ -184,6 +185,7 @@ class Test(Serializable, Jsonable):
                                        f"{self._teacher}+{self._classroom}+{str(self._questions)}+"
                                        f"{str(self._participants)}+{self._name}+{self._start}+"
                                        f"{self._end}+{uuid.uuid4()}"))
+        self._set_pickled_file_path()
         ScholappLogger.info(f"Test added: {self._test_id}")
         self.serialize()
         return self
