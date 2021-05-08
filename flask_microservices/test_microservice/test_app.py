@@ -121,7 +121,7 @@ class TestApp(FlaskAppBase):
                 TestApp._verify_login_details(flask.request.get_json())
                 tests = []
                 for test in self._test_container.Tests.values():
-                    if test.Classroom == class_id:
+                    if test.Classroom["class_id"] == class_id:
                         tests += [test]
 
                 return flask.jsonify({"verdict": True, "tests": tests})
