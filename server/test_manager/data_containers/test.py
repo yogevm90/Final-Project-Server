@@ -41,7 +41,7 @@ class Test(Serializable, Jsonable):
         self._teacher = teacher
         self._participants = {}
         self._name = name
-        self._path_to_pickled_file = self._get_pickled_file_path()
+        self._path_to_pickled_file = self._set_pickled_file_path()
 
     @property
     def TestId(self):
@@ -132,11 +132,13 @@ class Test(Serializable, Jsonable):
         """
         Serialize the object
         """
-        pickled_file = Path(self._get_pickled_file_path())
+        pickled_file = Path(self._set_pickled_file_path())
         if not pickled_file.is_file():
             pickled_file.touch()
+        to_serialize = copy.deepcopy(self)
+        to_serialize._path_to_pickled_file = str(self._path_to_pickled_file)
         with open(pickled_file, "wb") as pickled_file:
-            pickle.dump(self, pickled_file)
+            pickle.dump(to_serialize, pickled_file)
 
     def deserialize(self):
         """
@@ -149,13 +151,13 @@ class Test(Serializable, Jsonable):
                 deserialized_test = pickle.load(pickled_file)
                 self._questions += deserialized_test.Questions
                 self._classroom = deserialized_test.Classroom
-                self._path_to_pickled_file = deserialized_test.PickledFilePath
+                self._path_to_pickled_file = Path(deserialized_test.PickledFilePath)
                 self._date = deserialized_test.Date
                 self._start = deserialized_test.Start
                 self._end = deserialized_test.End
         return self
 
-    def _get_pickled_file_path(self):
+    def _set_pickled_file_path(self):
         pickled_tests = Path(os.path.join(os.path.dirname(__file__), "pickled_tests"))
         if not pickled_tests.is_dir():
             pickled_tests.mkdir()
