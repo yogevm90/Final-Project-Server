@@ -89,6 +89,26 @@ class DBApp(FlaskAppBase):
             except QueryException:
                 return flask.jsonify({'verdict': False, "classes": []})
 
+        @self.route("/GetClass/<class_id>", methods=["POST"])
+        def get_user_classes(class_id):
+            request_data = flask.request.get_json()
+            try:
+                if not self.validate_user(request_data):
+                    return flask.jsonify({'verdict': False, "classes": []})
+                username = request_data['username']
+                classroom = None
+                classes = self._db_data_manager.get_classes_by_username(username)
+                for c in classes:
+                    if c["class_id"] == class_id:
+                        classroom = c
+                        break
+                if classroom is None:
+                    return flask.jsonify({'verdict': False, "class": None})
+                return flask.jsonify({'verdict': True, "class": classroom})
+
+            except QueryException:
+                return flask.jsonify({'verdict': False, "class": None})
+
         @self.route("/Details", methods=["POST"])
         def details():
             request_data = flask.request.get_json()

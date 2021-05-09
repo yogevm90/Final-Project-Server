@@ -1,6 +1,5 @@
 import json
 import os
-import traceback
 import uuid
 from datetime import datetime
 from pathlib import Path

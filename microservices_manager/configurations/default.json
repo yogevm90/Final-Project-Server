@@ -40,6 +40,15 @@
         "logs_name": "${_logs_path}/ChatApp_logs.txt"
       }
     },
+    "AudioApp": {
+      "module": "flask_microservices.audio_microservice.audio_app",
+      "name": "AudioApp",
+      "port": 5004,
+      "args": [],
+      "kwargs": {
+        "logs_name": "${_logs_path}/AudioApp_logs.txt"
+      }
+    },
     "VideoApp": {
       "module": "flask_microservices.video_microservice.video_app",
       "name": "VideoApp",
