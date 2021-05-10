@@ -90,7 +90,7 @@ class DBApp(FlaskAppBase):
                 return flask.jsonify({'verdict': False, "classes": []})
 
         @self.route("/GetClass/<class_id>", methods=["POST"])
-        def get_user_classes(class_id):
+        def get_user_class_by_id(class_id):
             request_data = flask.request.get_json()
             try:
                 if not self.validate_user(request_data):
