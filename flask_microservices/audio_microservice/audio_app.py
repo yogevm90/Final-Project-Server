@@ -40,7 +40,7 @@ class AudioApp(FlaskAppBase):
 
         @self.route("/DeleteAudioPath", methods=["POST"])
         @self._compress.compressed()
-        def get_audio_path():
+        def del_audio_path():
             login_details = flask.request.get_json()
             class_id = login_details["class_id"]
             username = login_details["username"]
