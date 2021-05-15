@@ -119,12 +119,11 @@ class AudioApp(FlaskAppBase):
             self._audios[class_id][username] = user_p
             return flask.make_response(str(user_p))
 
-        # @self.route("/PostAudio/<user>", methods=["POST"])
-        # @self._compress.compressed()
-        # def post_audio(user):
-        #     audio = flask.request.get_data()
-        #     self._audios[user] = audio
-        #     return flask.make_response()
+        @self.route("/GetWorkingDir")
+        @self._compress.compressed()
+        def get_cwd():
+            cwd = os.path.dirname(__file__)
+            return flask.Response(cwd)
         #
         # @self.route("/GetAudio/<user>")
         # @self._compress.compressed()
