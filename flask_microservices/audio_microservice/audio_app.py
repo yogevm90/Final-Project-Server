@@ -62,11 +62,13 @@ class AudioApp(FlaskAppBase):
             username = login_details["username"]
 
             class_p = self._static_folder / class_id
-            if not class_p.is_dir():
+            if not os.path.isdir(class_p):
+                ScholappLogger.info(f"Creating: {class_p}")
                 class_p.mkdir()
 
             user_p = class_p / username
-            if not user_p.is_dir():
+            if not os.path.isdir(user_p):
+                ScholappLogger.info(f"Creating: {user_p}")
                 user_p.mkdir()
 
             if class_id not in self._audios:
