@@ -81,3 +81,11 @@
 [10-May-21 21:44:12] [Scholapp server] [Process: 20424] [Scholapp] - INFO - Setting up was successful
 [10-May-21 22:01:18] [Scholapp server] [Process: 13400] [Scholapp] - INFO - Setting up flask_microservices.audio_microservice.audio_app
 [10-May-21 22:01:18] [Scholapp server] [Process: 13400] [Scholapp] - INFO - Setting up was successful
+[14-May-21 17:48:28] [Scholapp server] [Process: 11896] [Scholapp] - INFO - Setting up flask_microservices.audio_microservice.audio_app
+[14-May-21 17:48:28] [Scholapp server] [Process: 11896] [Scholapp] - INFO - Setting up was successful
+[14-May-21 17:51:01] [Scholapp server] [Process: 1744] [Scholapp] - INFO - Setting up flask_microservices.audio_microservice.audio_app
+[14-May-21 17:51:01] [Scholapp server] [Process: 1744] [Scholapp] - INFO - Setting up was successful
+[14-May-21 17:51:46] [Scholapp server] [Process: 15008] [Scholapp] - INFO - Setting up flask_microservices.audio_microservice.audio_app
+[14-May-21 17:51:46] [Scholapp server] [Process: 15008] [Scholapp] - INFO - Setting up was successful
+[14-May-21 17:52:23] [Scholapp server] [Process: 6592] [Scholapp] - INFO - Setting up flask_microservices.audio_microservice.audio_app
+[14-May-21 17:52:23] [Scholapp server] [Process: 6592] [Scholapp] - INFO - Setting up was successful

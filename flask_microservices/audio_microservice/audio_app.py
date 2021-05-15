@@ -66,4 +66,4 @@ class AudioApp(FlaskAppBase):
             if class_id not in self._audios:
                 self._audios[class_id] = {}
             self._audios[class_id][username] = user_p
-            return flask.Response(str(user_p))
+            return flask.make_response(str(user_p))

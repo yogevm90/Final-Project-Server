@@ -15,6 +15,7 @@ class ImagesContainer(object):
     def get_image(self, user):
         if user in self._images and len(self._images[user]) > 0:
             return self._images[user][-1]
+        return None
 
     def add_image(self, image, user):
         if user not in self._images:
