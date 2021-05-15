@@ -1,4 +1,0 @@
-[15-May-21 13:21:12] [Scholapp server] [Process: 4742] [Scholapp] - INFO - Setting up flask_microservices.test_microservice.test_app
-[15-May-21 13:21:12] [Scholapp server] [Process: 4742] [Scholapp] - INFO - Deserializing tests
-[15-May-21 13:21:12] [Scholapp server] [Process: 4742] [Scholapp] - INFO - Setting up was successful
-[15-May-21 13:21:21] [Scholapp server] [Process: 4742] [Scholapp] - INFO - Checking classroom: 00003

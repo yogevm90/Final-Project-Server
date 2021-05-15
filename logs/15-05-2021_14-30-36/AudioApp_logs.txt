@@ -1,2 +1,0 @@
-[15-May-21 14:30:38] [Scholapp server] [Process: 6778] [Scholapp] - INFO - Setting up flask_microservices.audio_microservice.audio_app
-[15-May-21 14:30:38] [Scholapp server] [Process: 6778] [Scholapp] - INFO - Setting up was successful

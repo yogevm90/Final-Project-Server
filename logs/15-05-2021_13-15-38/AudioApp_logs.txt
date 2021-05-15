@@ -1,3 +1,0 @@
-[15-May-21 13:15:40] [Scholapp server] [Process: 4550] [Scholapp] - INFO - Setting up flask_microservices.audio_microservice.audio_app
-[15-May-21 13:15:40] [Scholapp server] [Process: 4550] [Scholapp] - INFO - Setting up was successful
-[15-May-21 13:16:08] [Scholapp server] [Process: 4550] [Scholapp] - INFO - Creating: /home/idan/Desktop/final_proj/Final-Project-Server/flask_microservices/audio_microservice/static/00003/idan57
