@@ -86,6 +86,7 @@ class ScholappLogger(object):
     @staticmethod
     def _get_logs_path(cwd) -> Path:
         cwd = Path(cwd)
-        while "logs" not in [p.name for p in cwd.iterdir()]:
-            cwd = cwd.parent
+        logs = cwd / "logs"
+        if not logs.is_dir():
+            logs.mkdir()
         return cwd / "logs"

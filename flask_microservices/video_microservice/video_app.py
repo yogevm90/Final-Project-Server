@@ -58,8 +58,10 @@ class VideoApp(FlaskAppBase):
         def get_img(user):
             image = self._images.get_image(user)
             if image:
+                ScholappLogger.info("Got Video")
                 return flask.Response(image, mimetype="image/jpg")
             else:
+                ScholappLogger.info("Sending default")
                 return flask.Response(self._default_img, mimetype="image/jpg")
 
         @self.route("/UploadImage/<user>", methods=["POST"])
