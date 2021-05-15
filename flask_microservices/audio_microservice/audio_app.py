@@ -66,8 +66,14 @@ class AudioApp(FlaskAppBase):
             user_p = class_p / username
             ScholappLogger.info(f"Creating path for audio: {class_p}")
             ScholappLogger.info(f"Creating path for audio: {user_p}")
-            class_p.mkdir(exist_ok=True)
-            user_p.mkdir(exist_ok=True)
+            try:
+                class_p.mkdir(exist_ok=True)
+            except FileExistsError:
+                pass
+            try:
+                user_p.mkdir(exist_ok=True)
+            except FileExistsError:
+                pass
 
             ScholappLogger.info(f"Created {class_p}: {class_p.is_dir()}")
             ScholappLogger.info(f"Created {user_p}: {user_p.is_dir()}")
@@ -76,3 +82,15 @@ class AudioApp(FlaskAppBase):
                 self._audios[class_id] = {}
             self._audios[class_id][username] = user_p
             return flask.make_response(str(user_p))
+
+        # @self.route("/PostAudio/<user>", methods=["POST"])
+        # @self._compress.compressed()
+        # def post_audio(user):
+        #     audio = flask.request.get_data()
+        #     self._audios[user] = audio
+        #     return flask.make_response()
+        #
+        # @self.route("/GetAudio/<user>")
+        # @self._compress.compressed()
+        # def post_audio(user):
+        #     return flask.Response(self._audios[user], mimetype="audio/wav")
