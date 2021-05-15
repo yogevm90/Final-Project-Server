@@ -1,7 +1,9 @@
 import os
 import shutil
+import time
 import traceback
 from pathlib import Path
+from threading import Thread
 
 import flask
 from flask_compress import Compress
@@ -9,6 +11,25 @@ from flask_cors import CORS
 
 from flask_microservices.flask_executor.flask_app_base import FlaskAppBase
 from utilities.logging.scholapp_server_logger import ScholappLogger
+
+
+class Running(object):
+    def __init__(self):
+        self.running = True
+
+
+def clean_file(file: Path, running: Running):
+    start = time.time()
+    times_failed = 0
+    while (time.time() - start) < 300 and times_failed < 200 and running.running:
+        try:
+            file.unlink()
+            ScholappLogger.info(f"Is deleted: {file.is_file()}")
+        except Exception:
+            times_failed += 1
+            pass
+
+    ScholappLogger.info(f"Is deleted: {file.is_file()}")
 
 
 class AudioApp(FlaskAppBase):
@@ -28,6 +49,7 @@ class AudioApp(FlaskAppBase):
         self._audios = {}
         self._compress = Compress()
         self._compress.init_app(self)
+        self._cleaner_threads = {}
         self._static_folder = Path(os.path.dirname(__file__)) / "static"
         if not self._static_folder.is_dir():
             self._static_folder.mkdir()
@@ -48,8 +70,13 @@ class AudioApp(FlaskAppBase):
                 username = login_details["username"]
                 if class_id in self._audios and username in self._audios[class_id]:
                     if self._audios[class_id][username].is_dir():
-                        ScholappLogger.info(f"Deleting path for audio: {self._audios[class_id][username]}")
-                        (self._audios[class_id][username] / "record.wav").unlink()
+                        to_del = self._audios[class_id][username] / "record.wav"
+                        ScholappLogger.info(f"Deleting path for audio: {to_del}")
+                        to_del.unlink()
+                        running = Running()
+                        thread = Thread(target=clean_file, args=(to_del, running))
+                        thread.run()
+                        self._cleaner_threads[username] = {"thread": thread, "running": running}
                 return flask.jsonify({"verdict": True})
             except Exception:
                 ScholappLogger.error(traceback.format_exc())
@@ -61,6 +88,10 @@ class AudioApp(FlaskAppBase):
             login_details = flask.request.get_json()
             class_id = login_details["class_id"]
             username = login_details["username"]
+
+            if username in self._cleaner_threads:
+                self._cleaner_threads[username]["running"].running = False
+                self._cleaner_threads[username]["thread"].join()
 
             class_p = self._static_folder / class_id
             user_p = class_p / username
