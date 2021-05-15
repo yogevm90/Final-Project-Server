@@ -1,5 +1,6 @@
 import os
 import shutil
+import traceback
 from pathlib import Path
 
 import flask
@@ -41,12 +42,17 @@ class AudioApp(FlaskAppBase):
         @self.route("/DeleteAudioPath", methods=["POST"])
         @self._compress.compressed()
         def del_audio_path():
-            login_details = flask.request.get_json()
-            class_id = login_details["class_id"]
-            username = login_details["username"]
-            if class_id in self._audios and username in self._audios[class_id]:
-                if self._audios[class_id][username].is_dir():
-                    shutil.rmtree(str(self._audios[class_id][username]))
+            try:
+                login_details = flask.request.get_json()
+                class_id = login_details["class_id"]
+                username = login_details["username"]
+                if class_id in self._audios and username in self._audios[class_id]:
+                    if self._audios[class_id][username].is_dir():
+                        shutil.rmtree(str(self._audios[class_id][username]))
+                return flask.jsonify({"verdict": True})
+            except Exception:
+                ScholappLogger.error(traceback.format_exc())
+                return flask.jsonify({"verdict": False})
 
         @self.route("/GetAudioPath", methods=["POST"])
         @self._compress.compressed()
