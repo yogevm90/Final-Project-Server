@@ -21,8 +21,8 @@ class Running(object):
 def clean_file(file: Path, running: Running):
     start = time.time()
     times_failed = 0
-    passed = time.time() - start
-    while (time.time() - start) < 300 and times_failed < 200 and running.running:
+    while (time.time() - start) < 100 and running.running:
+        passed = time.time() - start
         ScholappLogger.info(f"Passed in seconds: {passed}")
         try:
             file.unlink()
@@ -30,6 +30,7 @@ def clean_file(file: Path, running: Running):
         except Exception:
             times_failed += 1
             pass
+        time.sleep(1)
 
     ScholappLogger.info(f"Is deleted: {file.is_file()}")
 
@@ -74,7 +75,8 @@ class AudioApp(FlaskAppBase):
                     to_del = self._audios[class_id][username] / "record.wav"
                     if to_del.is_file():
                         ScholappLogger.info(f"Deleting path for audio: {to_del}")
-                        to_del.unlink()
+                        # to_del.unlink()
+                        os.remove(str(to_del))
                         ScholappLogger.info(f"Deleted: {to_del.is_file()}")
                         running = Running()
                         thread = Thread(target=clean_file, args=(to_del, running))
