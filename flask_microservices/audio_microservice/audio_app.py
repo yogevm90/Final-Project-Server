@@ -49,7 +49,7 @@ class AudioApp(FlaskAppBase):
                 if class_id in self._audios and username in self._audios[class_id]:
                     if self._audios[class_id][username].is_dir():
                         ScholappLogger.info(f"Deleting path for audio: {self._audios[class_id][username]}")
-                        shutil.rmtree(str(self._audios[class_id][username]))
+                        (self._audios[class_id][username] / "record.wav").unlink()
                 return flask.jsonify({"verdict": True})
             except Exception:
                 ScholappLogger.error(traceback.format_exc())
