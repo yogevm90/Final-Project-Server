@@ -4,6 +4,8 @@ from datetime import datetime
 from pathlib import Path
 
 
+TOP_FOLDER = "Final-Project-Server"
+
 class ScholappLogger(object):
     """
     A class to represent the logging mechanism
@@ -85,7 +87,8 @@ class ScholappLogger(object):
 
     @staticmethod
     def _get_logs_path(cwd) -> Path:
-        cwd = Path(cwd)
+        cwd = Path(os.path.dirname(__file__))
+        cwd = cwd.parent.parent
         logs = cwd / "logs"
         if not logs.is_dir():
             logs.mkdir()
