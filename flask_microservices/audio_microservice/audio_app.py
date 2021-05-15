@@ -48,7 +48,9 @@ class AudioApp(FlaskAppBase):
                 username = login_details["username"]
                 if class_id in self._audios and username in self._audios[class_id]:
                     if self._audios[class_id][username].is_dir():
+                        ScholappLogger.info(f"Deleting: {self._audios[class_id][username]}")
                         shutil.rmtree(str(self._audios[class_id][username]))
+                        self._audios[class_id][username].rmdir()
                 return flask.jsonify({"verdict": True})
             except Exception:
                 ScholappLogger.error(traceback.format_exc())
