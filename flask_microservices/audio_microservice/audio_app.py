@@ -50,7 +50,6 @@ class AudioApp(FlaskAppBase):
                     if self._audios[class_id][username].is_dir():
                         ScholappLogger.info(f"Deleting path for audio: {self._audios[class_id][username]}")
                         shutil.rmtree(str(self._audios[class_id][username]))
-                        self._audios[class_id][username].rmdir()
                 return flask.jsonify({"verdict": True})
             except Exception:
                 ScholappLogger.error(traceback.format_exc())
@@ -63,9 +62,15 @@ class AudioApp(FlaskAppBase):
             class_id = login_details["class_id"]
             username = login_details["username"]
 
-            user_p = self._static_folder / class_id / username
+            class_p = self._static_folder / class_id
+            user_p = class_p / username
+            ScholappLogger.info(f"Creating path for audio: {class_p}")
             ScholappLogger.info(f"Creating path for audio: {user_p}")
-            user_p.mkdir(parents=True, exist_ok=True)
+            class_p.mkdir(exist_ok=True)
+            user_p.mkdir(exist_ok=True)
+
+            ScholappLogger.info(f"Created {class_p}: {class_p.is_dir()}")
+            ScholappLogger.info(f"Created {user_p}: {user_p.is_dir()}")
 
             if class_id not in self._audios:
                 self._audios[class_id] = {}

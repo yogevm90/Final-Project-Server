@@ -1,0 +1,2 @@
+[12-May-21 22:07:42] [Scholapp server] [Process: 9067] [Scholapp] - INFO - Setting up flask_microservices.chat_microservice.chat_app
+[12-May-21 22:07:42] [Scholapp server] [Process: 9067] [Scholapp] - INFO - Setting up was successful

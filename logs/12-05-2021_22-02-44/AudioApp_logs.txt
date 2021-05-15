@@ -1,0 +1,2 @@
+[12-May-21 22:02:45] [Scholapp server] [Process: 8874] [Scholapp] - INFO - Setting up flask_microservices.audio_microservice.audio_app
+[12-May-21 22:02:45] [Scholapp server] [Process: 8874] [Scholapp] - INFO - Setting up was successful
