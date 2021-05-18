@@ -11,7 +11,7 @@ classes_col = mydb["classes"]
 users_col.remove()
 classes_col.remove()
 
-class1_query = {'class_name': 'math', 'class_id': '00003', 'teacher': 'admin', 'description': 'math class', 'external_links': ['www.google.com', 'www.facebook.com'], 'homework_links': ['www.ynet.co.il'], 'updates': ['update 1', 'update 2'], 'test_ids': [], 'participants': ['yogevm90', 'idan57'], 'day': 1, 'start': '12', 'end': '13', 'img_path': 'www.walla.co.il'}
+class1_query = {'class_name': 'math', 'class_id': '00003', 'teacher': 'admin', 'description': 'math class', 'external_links': ['www.google.com', 'www.facebook.com'], 'homework_links': ['www.ynet.co.il'], 'updates': ['update 1', 'update 2'], 'test_ids': [], 'participants': ['yogevm90', 'idan57'], 'day': 2, 'start': '2021-05-10T10:00:00', 'end': '2021-05-10T11:00:00', 'img_path': 'www.walla.co.il'}
 
 yogev_pass = "yogev"
 idan_pass = "idan"
