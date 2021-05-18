@@ -400,9 +400,9 @@ class TestApp(FlaskAppBase):
 
         TestApp._verify_login_details({"username": username, "password": password})
 
-        redirect_url_id = uuid.uuid4()
+        redirect_url_id = str(uuid.uuid4())
         self._user_redirects[username] = {
-            "verification_id": str(redirect_url_id),
+            "verification_id": redirect_url_id,
             "test_id": test_id,
             "remaining_tries": 3
         }
