@@ -73,7 +73,7 @@ class TestContainer(Serializable, Jsonable):
         for test_id, path in self._tests_dict.items():
             to_save[test_id] = str(path)
         with open(self._tests_json_path, "w") as tests_json:
-            json.dump(to_save, tests_json)
+            json.dump(to_save, tests_json, sort_keys=True, indent=4)
 
     def json(self):
         return {
