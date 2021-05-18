@@ -22,5 +22,6 @@ MongoDB Database:
             "participants": List["students_username"]
             "stream_paths": List[{"id": str, "video": str, "audio": str}]
             "day": int [1-7]
-            "hours": List[str]
+            "start": str
+            "end": str
             "img_path": str
