@@ -263,8 +263,8 @@ class TestApp(FlaskAppBase):
             # Test id is not valid
             return False
 
-        start = datetime.strptime(test.Start, "%y-%m-%dT%H:%M:00")
-        end = datetime.strptime(test.End, "%y-%m-%dT%H:%M:00")
+        start = datetime.strptime(test.Start, "%Y-%m-%dT%H:%M:%S")
+        end = datetime.strptime(test.End, "%Y-%m-%dT%H:%M:%S")
 
         # Test didn't start yet
         if start > now or end < now:
