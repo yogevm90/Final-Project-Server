@@ -435,7 +435,7 @@ class TestApp(FlaskAppBase):
         TestApp._verify_login_details(login_details)
         username = login_details["username"]
         test = self._test_container.get_test_by_id(test_id)
-        participant = test.Participants[username]
+        participant = [p for p in test.Participants if p == username][0]
         result = participant["should_check"]
         participant["should_check"] = False
         return result
