@@ -255,10 +255,10 @@ class TestApp(FlaskAppBase):
             """
             return self.actual_submit_user_is_valid(test_id, username)
 
-    def _data_is_valid(self, data):
+    def _validate_is_test_time(self, test_id):
         now = datetime.now()
         try:
-            test = self._test_container.get_test_by_id(data["test_id"])
+            test = self._test_container.get_test_by_id(test_id)
         except KeyError:
             # Test id is not valid
             return False
@@ -286,11 +286,10 @@ class TestApp(FlaskAppBase):
         :param username: username
         :return: return the rendered page
         """
-        data = flask.request.get_json()
         cookie = flask.request.cookies.get("userID")
         user_data = self._cookies[cookie]
 
-        if self._data_is_valid(data) and cookie in self._cookies and \
+        if self._validate_is_test_time(test_id) and cookie in self._cookies and \
                 test_id == user_data["test_id"] and user_data["username"] == username:
             redirect_url_id = self._user_redirects[username]["verification_id"]
             test_url = os.path.join("static", f"{username}.png")
