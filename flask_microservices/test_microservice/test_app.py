@@ -438,7 +438,7 @@ class TestApp(FlaskAppBase):
         participant = test.Participants[username]
         result = participant["should_check"]
         participant["should_check"] = False
-        return result
+        return flask.make_response(result)
 
     @classmethod
     @in_try_catch
