@@ -176,7 +176,11 @@ class Test(Serializable, Jsonable):
         self._questions = [Question().from_json(q) for q in json_val["questions"]]
         self._classroom = json_val["classroom"]
         self._teacher = json_val["teacher"]
-        self._participants = json_val["participants"]
+        if type(json_val["participants"]) == list:
+            for participant in json_val["participants"]:
+                self.add_participant(participant)
+        else:
+            self._participants = json_val["participants"]
         self._name = json_val["name"]
         self._start = json_val["start"]
         self._end = json_val["end"]
