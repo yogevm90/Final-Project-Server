@@ -268,6 +268,7 @@ class TestApp(FlaskAppBase):
 
         # Test didn't start yet
         if start > now or end < now:
+            ScholappLogger.info("This is not the time of the test!")
             return False
 
         return True
