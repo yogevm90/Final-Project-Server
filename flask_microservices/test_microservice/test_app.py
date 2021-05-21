@@ -609,7 +609,7 @@ class TestApp(FlaskAppBase):
         res_json = flask.request.get_json()
         username = res_json["username"]
         answers = {}
-        if username in self._submitted_paths[test_id]:
+        if test_id in self._submitted_paths and username in self._submitted_paths[test_id]:
             student_submit_file = self._submitted_paths[test_id][username]
             with open(student_submit_file, "r") as student_submit_file_r:
                 answers = json.load(student_submit_file_r)["answers"]
