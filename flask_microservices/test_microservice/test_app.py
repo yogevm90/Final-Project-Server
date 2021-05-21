@@ -305,8 +305,13 @@ class TestApp(FlaskAppBase):
                 test_id == user_data["test_id"] and user_data["username"] == username:
             redirect_url_id = self._user_redirects[username]["verification_id"]
             test_url = os.path.join("static", f"{username}.png")
+            global_domain_file = os.path.join(os.path.dirname(__file__), "global_domain.txt")
+
+            with open(global_domain_file, "r") as f:
+                global_domain = f.read()
+
             self._qr_code_generator.create({
-                "url": f"http://localhost:{self._port}/VerifyYourTest/{test_id}/{username}"
+                "url": f"http://{global_domain}:{self._port}/VerifyYourTest/{test_id}/{username}"
             }, save_to=test_url)
 
             return flask.render_template("qr_code_page.html",
