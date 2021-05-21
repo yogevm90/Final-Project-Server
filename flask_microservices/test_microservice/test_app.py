@@ -409,6 +409,8 @@ class TestApp(FlaskAppBase):
         test_key = flask.request.form["testKey"]
         test_id = flask.request.form["testId"]
 
+        ScholappLogger.info(f"Starting test {test_id} for {username}")
+
         TestApp._verify_login_details({"username": username, "password": password})
 
         redirect_url_id = str(uuid.uuid4())
@@ -419,10 +421,12 @@ class TestApp(FlaskAppBase):
         }
 
         ScholappLogger.info(f"User: {username} - tries to login")
-        resp = flask.make_response(flask.redirect(f"/StartTest/{test_id}/{username}"))
+        redirect_to = f"/StartTest/{test_id}/{username}"
+        resp = flask.make_response(flask.redirect(redirect_to))
         cookie = str(uuid.uuid3(uuid.NAMESPACE_DNS, username + password + test_key + test_id + redirect_url_id))
         self._cookies[cookie] = {"username": username, "test_id": test_id}
         resp.set_cookie("userID", cookie)
+        ScholappLogger.info(f"Redirecting to: {redirect_to}")
         return resp
 
     @staticmethod
