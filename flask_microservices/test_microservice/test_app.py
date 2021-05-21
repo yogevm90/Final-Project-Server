@@ -579,7 +579,7 @@ class TestApp(FlaskAppBase):
         test_id = submitted_test["test_id"]
         TestApp._verify_login_details(submitted_test)
 
-        if username in self._submitted_paths[test_id]:
+        if test_id in self._submitted_paths and username in self._submitted_paths[test_id]:
             student_submit_file = self._submitted_paths[test_id][username]
         else:
             test_submit_folder = self._submitted_tests_dir / test_id
