@@ -39,6 +39,7 @@ class TestApp(FlaskAppBase):
         self._test_container = TestContainer(deserialize=True)
         self._qr_code_generator = QRCodeCreator()
         self._port = -1
+        self._submitted_paths = {}
         self._submitted_tests_dir = Path(os.path.dirname(__file__)) / "submitted_tests"
 
         if not self._submitted_tests_dir.is_dir():
@@ -213,6 +214,16 @@ class TestApp(FlaskAppBase):
 
             """
             return self.actual_submit_test()
+
+        @self.route("/GetCurrTest/<test_id>", methods=["POST"])
+        def get_curr_test(test_id):
+            """
+            Get student's curr test
+
+            :return: {"verdict": True} in case of success and {"verdict": False} O.W.
+
+            """
+            return self.actual_get_curr_test(test_id)
 
         @self.route("/SubmitUserIsInvalid/<test_id>/<username>", methods=["POST"])
         def submit_user_is_invalid(test_id, username):
@@ -560,15 +571,44 @@ class TestApp(FlaskAppBase):
         :return: {"verdict": True} in case of success and {"verdict": False} O.W.
         """
         submitted_test = flask.request.get_json()
+        username = submitted_test["username"]
+        test_id = submitted_test["test_id"]
         TestApp._verify_login_details(submitted_test)
-        test_submit_folder = self._submitted_tests_dir / submitted_test["test_id"]
-        if not test_submit_folder.is_dir():
-            test_submit_folder.mkdir()
 
-        # We delete before saving
-        if "password" in submitted_test:
-            del submitted_test["password"]
-        student_submit_file = test_submit_folder / f"{submitted_test['username']}.json"
+        if username in self._submitted_paths[test_id]:
+            student_submit_file = self._submitted_paths[test_id][username]
+        else:
+            test_submit_folder = self._submitted_tests_dir / test_id
+            if not test_submit_folder.is_dir():
+                test_submit_folder.mkdir()
+
+            # We delete before saving
+            if "password" in submitted_test:
+                del submitted_test["password"]
+            student_submit_file = test_submit_folder / f"{username}.json"
+            self._submitted_paths[test_id] = {
+                username: student_submit_file
+            }
+
         with open(student_submit_file, "w") as student_submit_file_open:
             student_submit_file_open.write(json.dumps(submitted_test, sort_keys=True, indent=4))
         return flask.jsonify({"verdict": True})
+
+    @in_try_catch
+    def actual_get_curr_test(self, test_id):
+        """
+        Actual get the current test answers for the user
+
+        :param test_id: test id
+        :return: current test answers
+        """
+        res_json = flask.request.get_json()
+        username = res_json["username"]
+        answers = {}
+        if username in self._submitted_paths[test_id]:
+            student_submit_file = self._submitted_paths[test_id][username]
+            with open(student_submit_file, "r") as student_submit_file_r:
+                answers = json.load(student_submit_file_r)["answers"]
+
+        ScholappLogger.info(f"Got {len(answers)} answers for the current test {test_id} for the user: {username}")
+        return flask.jsonify(answers)
