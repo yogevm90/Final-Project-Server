@@ -28,7 +28,7 @@ class VideoApp(FlaskAppBase):
     A class for a microservice to save images
     """
 
-    def __init__(self, import_name="VideoApp", **kwargs):
+    def __init__(self, import_name="VideoApp", is_screen_share=False, **kwargs):
         """
         :param import_name: import name
         :param kwargs: any dict arguments needed
@@ -41,7 +41,12 @@ class VideoApp(FlaskAppBase):
         self._images = ImagesContainer()
         self._compress = Compress()
         self._compress.init_app(self)
-        default_img_path = os.path.join("static", "default.jpg")
+
+        if not is_screen_share:
+            default_img_path = os.path.join("static", "default.jpg")
+        else:
+            default_img_path = os.path.join("static", "default_screen.jpg")
+
         with open(default_img_path, "rb") as default_img:
             self._default_img = default_img.read()
         self._setup()

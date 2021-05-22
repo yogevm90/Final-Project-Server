@@ -57,6 +57,16 @@
       "kwargs": {
         "logs_name": "${_logs_path}/VideoApp_logs.txt"
       }
+    },
+    "ScreenShareApp": {
+      "module": "flask_microservices.video_microservice.video_app",
+      "name": "ScreenShareApp",
+      "port": 5006,
+      "args": [],
+      "kwargs": {
+        "logs_name": "${_logs_path}/ScreenShareApp_logs.txt",
+        "is_screen_share": true
+      }
     }
   }
 }
