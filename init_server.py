@@ -26,6 +26,9 @@ user2_query = {'username': 'idan57', 'password': password2, 'id': '00002', 'name
 admin_query = {'username': 'admin', 'password': password3, 'id': '00000', 'name': 'admin', 'surname': 'admin', 'role': 'teacher', 'classes': []}
 
 classes_col.insert_one(class1_query)
+classes_col.insert_one(class2_query)
+classes_col.insert_one(class3_query)
+classes_col.insert_one(class4_query)
 users_col.insert_one(user1_query)
 users_col.insert_one(user2_query)
 users_col.insert_one(admin_query)
