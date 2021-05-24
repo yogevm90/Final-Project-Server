@@ -161,6 +161,19 @@ class DBApp(FlaskAppBase):
             except StreamUserException as e:
                 return flask.jsonify({'verdict': False, 'reason': '{}'.format(e.message)})
 
+        @self.route("/CreateClass", methods=["POST"])
+        def create_class():
+            request_data = flask.request.get_json()
+            try:
+                if not self.validate_user(request_data):
+                    return flask.jsonify({'verdict': False, 'reason': 'wrong username or password'})
+                class_name = request_data['class_name']
+                self._db_data_manager.insert_class(request_data)
+                updated_class = self._db_data_manager.get_class_by_name(class_name)
+                return flask.jsonify({'verdict': True, 'data': updated_class})
+            except QueryException as e:
+                return flask.jsonify({'verdict': False, 'reason': '{}'.format(e.message)})
+
         @self.route("/GetClassroomPaths", methods=["POST"])
         def get_classroom_paths():
             request_data = flask.request.get_json()

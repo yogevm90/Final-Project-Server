@@ -89,6 +89,24 @@ Response:
 }
 
 Request:
+/CreateClass - {
+    "username": str,
+    "password": str,
+    "class_name": str,
+    "teacher": str,
+    "img_path": str,
+    "description": str,
+    "external_links": str,
+    "homework_links": str,
+    "updates": str,
+    "tests_ids": LIST[ID],
+    "participants": LIST[ID],
+    "start": str,
+    "end": str,
+    "day": int [between 1 - 7]}
+}
+
+Request:
 /Details - {    #Optional -  class or user
     "username": str,
     "password": str,
