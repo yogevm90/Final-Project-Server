@@ -117,7 +117,7 @@ class DBApp(FlaskAppBase):
                     return flask.jsonify({'verdict': False, 'reason': 'wrong username or password'})
                 data = request_data['data']
                 # case changing user
-                if bool(data['username']):
+                if data['new_password'] or data['surname'] or data['name']:
                     user_doc = self.student_by_name(data['username'])
                     if bool(data['new_password']):
                         user_doc['password'] = self._db_auth_manager.get_hashed_password(request_data['new_password'])
