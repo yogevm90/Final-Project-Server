@@ -64,8 +64,9 @@ class DatabaseDataManager(object):
             raise InvalidRequestException('Teacher user {} does not exist'.format(class_data['teacher']))
         if not self.is_teacher(class_data['teacher']):
             raise InvalidRequestException('User {} cannot be teacher'.format(class_data['teacher']))
-        new_id = self.create_id()
-        class_data['class_id'] = new_id
+        if 'class_id' not in class_data:
+            new_id = self.create_id()
+            class_data['class_id'] = new_id
         self._classes_collection.insert_one(class_data)
 
     def add_participant(self, username: str, class_name: str):
