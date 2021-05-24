@@ -68,6 +68,9 @@ class DatabaseDataManager(object):
             new_id = self.create_id()
             class_data['class_id'] = new_id
         self._classes_collection.insert_one(class_data)
+        for participant in class_data['participants']:
+            self._users_collection.find_one_and_update({'username': participant},
+                                                       {'$push': {'classes': class_data['class_id']}})
 
     def add_participant(self, username: str, class_name: str):
         if not self.class_exists(class_name):
