@@ -19,7 +19,7 @@ class MicroservicesManager(ManagerInterface):
 
     def __init__(self):
         self._logs_path = ScholappLogger.init_logger("MicroservicesManager_logs.txt", create_time_folder=True)
-        self._apps_config_file_path = os.path.join(os.path.dirname(__file__), "configurations", "default.json")
+        self._apps_config_file_path = os.path.join(os.path.dirname(__file__), "configurations", "default1.json")
         self._apps_config_file_content = {}
         self._executor = None
         self._envs = {

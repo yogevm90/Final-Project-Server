@@ -65,7 +65,7 @@
       "args": [],
       "kwargs": {
         "logs_name": "${_logs_path}/ScreenShareApp_logs.txt",
-        "is_screen_share": true
+        "is_screen_share": "true"
       }
     }
   }
