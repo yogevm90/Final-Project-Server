@@ -133,24 +133,22 @@ class DBApp(FlaskAppBase):
                     return flask.jsonify({'verdict': True, 'data': updated_user})
 
                 # case changing or inserting class
-                elif bool(data['class_name']):
-                    class_name = data['class_name']
+                elif bool(data['class']):
+                    class_details = data['class']
+                    class_name = class_details['class_name']
                     # update class if exists already
                     if self._db_data_manager.class_exists(class_name):
                         class_data = self.class_by_name(class_name)
-                        for key in data:
+                        for key in class_details:
                             # keys from client can be empty
-                            if bool(data[key]):
-                                class_data[key] = data[key]
+                            if bool(class_details[key]):
+                                class_data[key] = class_details[key]
                         self._db_data_manager.update_class(class_name, class_data)
 
                     # create new class
                     else:
-                        data.pop('username')
-                        data.pop('name')
-                        data.pop('new_password')
-                        data.pop('surname')
-                        self._db_data_manager.insert_class(data)
+                        class_details = data['class']
+                        self._db_data_manager.insert_class(class_details)
 
                     # get updated class to send back
                     updated_class = self._db_data_manager.get_class_by_name(class_name)

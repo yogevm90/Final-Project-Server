@@ -1,4 +1,4 @@
 mkdir /stream
 groupadd streamers
-chgrp streamers /stream
-chmod -R g+r /stream
+chgrp streamers ../../../flask_microservices/static/stream
+chmod -R g+r ./static/stream
