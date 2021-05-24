@@ -60,7 +60,7 @@
     },
     "ScreenShareApp": {
       "module": "flask_microservices.video_microservice.video_app",
-      "name": "ScreenShareApp",
+      "name": "VideoApp",
       "port": 5006,
       "args": [],
       "kwargs": {
