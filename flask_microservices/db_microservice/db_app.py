@@ -129,7 +129,7 @@ class DBApp(FlaskAppBase):
                             if bool(data[key]):
                                 user_doc[key] = data[key]
                     self._db_data_manager.update_user(request_data['username'], user_doc)
-                    updated_user = self._db_data_manager.get_user_by_name(request_data['username'])
+                    updated_user = self.student_by_name(request_data['username'])
                     return flask.jsonify({'verdict': True, 'data': updated_user})
 
                 # case changing or inserting class
@@ -145,7 +145,7 @@ class DBApp(FlaskAppBase):
                                 class_data[key] = class_details[key]
                         self._db_data_manager.update_class(class_name, class_data)
                     # get updated class to send back
-                    updated_class = self._db_data_manager.get_class_by_name(class_name)
+                    updated_class = self.class_by_name(class_name)
                     return flask.jsonify({'verdict': True, 'data': updated_class})
                 else:
                     return flask.jsonify({'verdict': False, 'reason': 'Wrong data format'})
