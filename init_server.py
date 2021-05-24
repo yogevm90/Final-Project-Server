@@ -21,8 +21,8 @@ admin_pass = "admin"
 password1 = bcrypt.hashpw(yogev_pass.encode(), bcrypt.gensalt())
 password2 = bcrypt.hashpw(idan_pass.encode(), bcrypt.gensalt())
 password3 = bcrypt.hashpw(admin_pass.encode(), bcrypt.gensalt())
-user1_query = {'username': 'yogevm90', 'password': password1, 'id': '00001', 'name': 'Yogev', 'surname': 'Mela', 'role': 'student', 'classes': ['00003']}
-user2_query = {'username': 'idan57', 'password': password2, 'id': '00002', 'name': 'Idan', 'surname': 'Cohen', 'role': 'teacher', 'classes': ['00003']}
+user1_query = {'username': 'yogevm90', 'password': password1, 'id': '00001', 'name': 'Yogev', 'surname': 'Mela', 'role': 'student', 'classes': ['00003', '00004']}
+user2_query = {'username': 'idan57', 'password': password2, 'id': '00002', 'name': 'Idan', 'surname': 'Cohen', 'role': 'teacher', 'classes': ['00003', '00005', '00004']}
 admin_query = {'username': 'admin', 'password': password3, 'id': '00000', 'name': 'admin', 'surname': 'admin', 'role': 'teacher', 'classes': []}
 
 classes_col.insert_one(class1_query)
