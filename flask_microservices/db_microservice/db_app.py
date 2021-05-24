@@ -120,7 +120,7 @@ class DBApp(FlaskAppBase):
                 if data['new_password'] or data['surname'] or data['name']:
                     user_doc = self.student_by_name(data['username'])
                     if bool(data['new_password']):
-                        user_doc['password'] = self._db_auth_manager.get_hashed_password(request_data['new_password'])
+                        user_doc['password'] = self._db_auth_manager.get_hashed_password(data['new_password'])
                         stream_manager.change_password(data['username'], data['new_password'])
                     else:
                         # assign new user data from client
