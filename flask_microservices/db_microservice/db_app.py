@@ -118,18 +118,18 @@ class DBApp(FlaskAppBase):
                 data = request_data['data']
                 # case changing user
                 if data['new_password'] or data['surname'] or data['name']:
-                    user_doc = self.student_by_name(data['username'])
+                    user_doc = self.student_by_name(request_data['username'])
                     if bool(data['new_password']):
                         user_doc['password'] = self._db_auth_manager.get_hashed_password(data['new_password'])
-                        stream_manager.change_password(data['username'], data['new_password'])
+                        stream_manager.change_password(request_data['username'], data['new_password'])
                     else:
                         # assign new user data from client
                         for key in data:
                             # keys from client can be empty
                             if bool(data[key]):
                                 user_doc[key] = data[key]
-                    self._db_data_manager.update_user(data['username'], user_doc)
-                    updated_user = self._db_data_manager.get_user_by_name(data['username'])
+                    self._db_data_manager.update_user(request_data['username'], user_doc)
+                    updated_user = self._db_data_manager.get_user_by_name(request_data['username'])
                     return flask.jsonify({'verdict': True, 'data': updated_user})
 
                 # case changing or inserting class
