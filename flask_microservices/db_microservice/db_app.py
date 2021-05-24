@@ -133,7 +133,7 @@ class DBApp(FlaskAppBase):
                     return flask.jsonify({'verdict': True, 'data': updated_user})
 
                 # case changing or inserting class
-                elif bool(data['class_']):
+                elif data['class_'] is not None:
                     class_details = data['class']
                     class_name = class_details['class_name']
                     # update class if exists already
@@ -144,12 +144,6 @@ class DBApp(FlaskAppBase):
                             if bool(class_details[key]):
                                 class_data[key] = class_details[key]
                         self._db_data_manager.update_class(class_name, class_data)
-
-                    # create new class
-                    else:
-                        class_details = data['class_']
-                        self._db_data_manager.insert_class(class_details)
-
                     # get updated class to send back
                     updated_class = self._db_data_manager.get_class_by_name(class_name)
                     return flask.jsonify({'verdict': True, 'data': updated_class})
