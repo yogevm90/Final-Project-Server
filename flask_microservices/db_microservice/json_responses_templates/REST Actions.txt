@@ -105,6 +105,11 @@ Request:
     "end": str,
     "day": int [between 1 - 7]}
 }
+Response:
+{
+    "verdict": bool
+    "data": {}  #new class
+}
 
 Request:
 /Details - {    #Optional -  class or user

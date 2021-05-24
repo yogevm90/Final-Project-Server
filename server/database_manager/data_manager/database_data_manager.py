@@ -64,6 +64,8 @@ class DatabaseDataManager(object):
             raise InvalidRequestException('Teacher user {} does not exist'.format(class_data['teacher']))
         if not self.is_teacher(class_data['teacher']):
             raise InvalidRequestException('User {} cannot be teacher'.format(class_data['teacher']))
+        new_id = self.create_id()
+        class_data['class_id'] = new_id
         self._classes_collection.insert_one(class_data)
 
     def add_participant(self, username: str, class_name: str):
@@ -130,3 +132,11 @@ class DatabaseDataManager(object):
         if time_now < last_login + timedelta(hours=hours_since, minutes=minutes_since, seconds=seconds_since):
             return True
         return False
+
+    def create_id(self):
+        next_id = 1
+        for class_doc in self._classes_collection.find():
+            class_id = int(class_doc['class_id'])
+            if class_id > next_id:
+                next_id = class_id
+        return str(next_id + 1)
