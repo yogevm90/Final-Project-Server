@@ -1,3 +1,4 @@
 groupadd streamers
-chgrp streamers ../../../flask_microservices/static
+cd ../../../flask_microservices/audio_microservice
+chgrp streamers ./statoc
 chmod -R g+r ./static
