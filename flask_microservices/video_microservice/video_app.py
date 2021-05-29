@@ -1,4 +1,6 @@
 import os
+from threading import Lock
+from typing import Dict
 
 import flask
 from flask_compress import Compress
@@ -9,17 +11,37 @@ from utilities.logging.scholapp_server_logger import ScholappLogger
 
 
 class ImagesContainer(object):
+    _images: dict
+    _counters: dict
+    _deleting: Dict[str, Lock]
+
     def __init__(self):
         self._images = {}
+        self._counters = {}
+        self._deleting = {}
 
     def get_image(self, user):
         if user in self._images and len(self._images[user]) > 0:
+            # Making sure we are not deleting right now
+            if self._deleting[user].locked():
+                self._deleting[user].acquire()
+                self._deleting[user].release()
             return self._images[user][-1]
         return None
 
     def add_image(self, image, user):
         if user not in self._images:
             self._images[user] = []
+            self._counters[user] = 0
+            self._deleting[user] = Lock()
+        # Let some images get garbage collected - at most we can have 1000 at the same time
+        if self._counters[user] - 500 >= 500:
+            self._counters[user] -= 500
+            ScholappLogger.info(f"Deleting images for {user}")
+            self._deleting[user].acquire()
+            self._images[user] = self._images[user][500:]
+            self._deleting[user].release()
+        self._counters[user] += 1
         self._images[user] += [image]
 
 
