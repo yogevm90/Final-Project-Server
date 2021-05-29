@@ -11,6 +11,9 @@ from utilities.logging.scholapp_server_logger import ScholappLogger
 
 
 class ImagesContainer(object):
+    """
+    Class for containing images for simulating a video container
+    """
     _images: dict
     _counters: dict
     _deleting: Dict[str, Lock]
@@ -21,6 +24,12 @@ class ImagesContainer(object):
         self._deleting = {}
 
     def get_image(self, user):
+        """
+        Get an image by a user
+
+        :param user: user to get image for
+        :return: image of the user
+        """
         if user in self._images and len(self._images[user]) > 0:
             # Making sure we are not deleting right now
             if self._deleting[user].locked():
@@ -30,6 +39,12 @@ class ImagesContainer(object):
         return None
 
     def add_image(self, image, user):
+        """
+        Store image for a user
+
+        :param image: image to add
+        :param user: user to add image for
+        """
         if user not in self._images:
             self._images[user] = []
             self._counters[user] = 0
