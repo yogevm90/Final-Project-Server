@@ -14,11 +14,21 @@ from utilities.logging.scholapp_server_logger import ScholappLogger
 
 
 class Running(object):
+    """
+    Class to simulate a running boolean
+    """
+
     def __init__(self):
         self.running = True
 
 
 def clean_file(file: Path, running: Running):
+    """
+    Cleans the file given - might be that it still recreated
+
+    :param file: file to clean
+    :param running: Running object
+    """
     start = time.time()
     times_failed = 0
     while (time.time() - start) < 100 and running.running:
@@ -124,8 +134,3 @@ class AudioApp(FlaskAppBase):
         def get_cwd():
             cwd = os.path.dirname(__file__)
             return flask.Response(cwd)
-        #
-        # @self.route("/GetAudio/<user>")
-        # @self._compress.compressed()
-        # def post_audio(user):
-        #     return flask.Response(self._audios[user], mimetype="audio/wav")
