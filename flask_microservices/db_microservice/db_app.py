@@ -141,7 +141,9 @@ class DBApp(FlaskAppBase):
                         class_data = self.class_by_name(class_name)
                         for key in class_details:
                             # keys from client can be empty
-                            if bool(class_details[key]):
+                            if class_details[key]:
+                                ScholappLogger.info(f"Updating class details")
+                                ScholappLogger.info(f"{class_data[key]} = {class_details[key]}")
                                 class_data[key] = class_details[key]
                         self._db_data_manager.update_class(class_name, class_data)
                     # get updated class to send back
