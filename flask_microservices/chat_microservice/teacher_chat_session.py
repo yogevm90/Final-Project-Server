@@ -16,7 +16,7 @@ class TeacherChatSession(object):
         self._students = {}
         self._students_prev_num_of_msgs = defaultdict(lambda: 0)
         for participant in participants:
-            self._students[participant["name"]] = {}
+            self._students[participant] = {}
 
         self._students_lock = Lock()
 
