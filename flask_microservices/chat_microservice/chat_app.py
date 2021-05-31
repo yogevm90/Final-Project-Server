@@ -131,6 +131,7 @@ class ChatApp(FlaskAppBase):
 
     def actual_send_response(self, is_teacher=False):
         json_data = flask.request.get_json()
+        ScholappLogger.info(f"Json data is: {json_data}")
 
         if "time" not in json_data:
             now = datetime.now()
@@ -150,6 +151,7 @@ class ChatApp(FlaskAppBase):
 
     def actual_get_response(self, is_teacher=False):
         json_data = flask.request.get_json()
+        ScholappLogger.info(f"Json data is: {json_data}")
         if is_teacher:
             teacher_session = self._teachers_sessions[json_data["username"]]
             return teacher_session.get_student_msgs(json_data["student"], json_data["cookie"])
@@ -159,5 +161,6 @@ class ChatApp(FlaskAppBase):
 
     def actual_has_response(self):
         json_data = flask.request.get_json()
+        ScholappLogger.info(f"Json data is: {json_data}")
         teacher_session = self._teachers_sessions[json_data["username"]]
         return teacher_session.teacher_has_msgs(json_data["student"], json_data["cookie"])
