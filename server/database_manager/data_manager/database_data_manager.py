@@ -120,7 +120,7 @@ class DatabaseDataManager(object):
         if not self.class_exists(class_name):
             raise InvalidRequestException('class {} does not exist'.format(class_name))
         for key in update_info:
-            self._classes_collection.find_one_and_update({'name': class_name}, {'$set': {key: update_info[key]}})
+            self._classes_collection.find_one_and_update({'class_name': class_name}, {'$set': {key: update_info[key]}})
 
     def login_user(self, username: str):
         time_now = datetime.now()
