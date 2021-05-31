@@ -120,11 +120,13 @@ class ChatApp(FlaskAppBase):
                                                                    json_data["participants"],
                                                                    cookie)
         else:
-            if not ChatApp._test_is_verified(json_data["username"], json_data["test_id"]):
+            user = json_data["username"]
+            if not ChatApp._test_is_verified(user, json_data["test_id"]):
+                ScholappLogger.info(f"Test is not verified")
                 return flask.jsonify({"status": "You didn't verify yourself by phone!"})
             if json_data["teacher"] in self._teachers_sessions:
-                student_exists = self._teachers_sessions[json_data["teacher"]].add_student(json_data["username"],
-                                                                                           cookie)
+                ScholappLogger.info(f"Adding user {user}")
+                student_exists = self._teachers_sessions[json_data["teacher"]].add_student(user, cookie)
                 if not student_exists:
                     return flask.make_response("Failure"), 500
 
