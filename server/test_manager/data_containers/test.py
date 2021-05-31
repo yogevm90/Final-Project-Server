@@ -111,7 +111,7 @@ class Test(Serializable, Jsonable):
 
         :param username: username to add
         """
-        self._participants[username] = {"is_ok": True, "should_check": False}
+        self._participants[username] = {"name": username, "is_ok": True, "should_check": False}
 
     def set_pickled_path(self, path):
         """

@@ -19,7 +19,7 @@ class TeacherChatSession(object):
         self._students_prev_num_of_msgs = defaultdict(lambda: 0)
         for participant in participants:
             ScholappLogger.info(f"Adding participant: {participant}")
-            self._students[participant] = {}
+            self._students[participant["name"]] = {}
 
         self._students_lock = Lock()
 
