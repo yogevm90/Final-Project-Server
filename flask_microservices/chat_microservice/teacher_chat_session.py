@@ -19,7 +19,12 @@ class TeacherChatSession(object):
         self._students_prev_num_of_msgs = defaultdict(lambda: 0)
         for participant in participants:
             ScholappLogger.info(f"Adding participant: {participant}")
-            self._students[participant["name"]] = {}
+            self._students[participant["name"]] = {
+                "student_msgs": OrderedDict(),
+                "responses": OrderedDict(),
+                "std_lock": Lock(),
+                "resp_lock": Lock(),
+            }
 
         self._students_lock = Lock()
 
@@ -28,13 +33,7 @@ class TeacherChatSession(object):
         self._students_lock.acquire()
 
         if student_name in self._students and self._students[student_name] == {}:
-            self._students[student_name] = {
-                "student_msgs": OrderedDict(),
-                "responses": OrderedDict(),
-                "std_lock": Lock(),
-                "resp_lock": Lock(),
-                "student_cookie": student_cookie
-            }
+            self._students[student_name]["student_cookie"] = student_cookie
         elif student_name not in self._students:
             student_exists = False
 
