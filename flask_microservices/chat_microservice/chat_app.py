@@ -98,7 +98,7 @@ class ChatApp(FlaskAppBase):
 
     @staticmethod
     def _test_is_verified(username, test_id):
-        response = requests.get(f"http://127.0.0.1:5000/{test_id}/{username}")
+        response = requests.get(f"http://127.0.0.1:5000/GetUserIsVerified/{test_id}/{username}")
         return response.json()["verified"]
 
     def actual_open_session(self, is_teacher=False):
