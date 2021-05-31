@@ -143,13 +143,18 @@ class ChatApp(FlaskAppBase):
         if is_teacher:
             if json_data["username"] in self._teachers_sessions:
                 teacher_session = self._teachers_sessions[json_data["username"]]
-                return teacher_session.add_teacher_msg(json_data["msg"], json_data["student"], json_data["cookie"],
+                msg = json_data["msg"]
+                ScholappLogger.info(f"--- msg : {msg} ---")
+
+                return teacher_session.add_teacher_msg(msg, json_data["student"], json_data["cookie"],
                                                        json_data["time"])
             else:
                 return flask.make_response("FAILURE"), 500
         else:
+            msg = json_data["msg"]
+            ScholappLogger.info(f"--- msg : {msg} ---")
             teacher_session = self._teachers_sessions[json_data["teacher"]]
-            return teacher_session.add_student_msg(json_data["msg"], json_data["username"], json_data["cookie"],
+            return teacher_session.add_student_msg(msg, json_data["username"], json_data["cookie"],
                                                    json_data["time"])
 
     def actual_get_response(self, is_teacher=False):
