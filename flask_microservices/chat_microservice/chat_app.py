@@ -103,6 +103,7 @@ class ChatApp(FlaskAppBase):
 
     def actual_open_session(self, is_teacher=False):
         json_data = flask.request.get_json()
+        ScholappLogger.info(f"Json data is: {json_data}")
 
         logged_in = ChatApp._verify_login_details(username=json_data["username"], password=json_data["password"],
                                                   is_teacher=is_teacher)
@@ -113,9 +114,11 @@ class ChatApp(FlaskAppBase):
         cookie = str(uuid.uuid3(uuid.NAMESPACE_DNS, json_data["username"] + json_data["password"] + str(uuid.uuid4())))
 
         if is_teacher:
-            self._teachers_sessions[json_data["username"]] = TeacherChatSession(json_data["username"],
-                                                                                json_data["participants"],
-                                                                                cookie)
+            username = json_data["username"]
+            ScholappLogger.info(f"Teacher session opened: {username}")
+            self._teachers_sessions[username] = TeacherChatSession(username,
+                                                                   json_data["participants"],
+                                                                   cookie)
         else:
             if not ChatApp._test_is_verified(json_data["username"], json_data["test_id"]):
                 return flask.jsonify({"status": "You didn't verify yourself by phone!"})
