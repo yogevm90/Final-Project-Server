@@ -32,7 +32,7 @@ class TeacherChatSession(object):
         student_exists = True
         self._students_lock.acquire()
 
-        if student_name in self._students and self._students[student_name] == {}:
+        if student_name in self._students:
             self._students[student_name]["cookie"] = student_cookie
         elif student_name not in self._students:
             student_exists = False
