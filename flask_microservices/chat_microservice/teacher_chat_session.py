@@ -3,6 +3,8 @@ from threading import Lock
 
 import flask
 
+from utilities.logging.scholapp_server_logger import ScholappLogger
+
 
 class TeacherChatSession(object):
     _students_lock: Lock
@@ -16,6 +18,7 @@ class TeacherChatSession(object):
         self._students = {}
         self._students_prev_num_of_msgs = defaultdict(lambda: 0)
         for participant in participants:
+            ScholappLogger.info(f"Adding participant: {participant}")
             self._students[participant] = {}
 
         self._students_lock = Lock()
