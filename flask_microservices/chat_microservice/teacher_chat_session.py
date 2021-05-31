@@ -33,7 +33,7 @@ class TeacherChatSession(object):
         self._students_lock.acquire()
 
         if student_name in self._students and self._students[student_name] == {}:
-            self._students[student_name]["student_cookie"] = student_cookie
+            self._students[student_name]["cookie"] = student_cookie
         elif student_name not in self._students:
             student_exists = False
 
@@ -43,7 +43,7 @@ class TeacherChatSession(object):
     def add_student_msg(self, msg, student_name, student_cookie, key_time):
         self._students[student_name]["std_lock"].acquire()
         try:
-            if student_name in self._students and self._students[student_name]["student_cookie"] == student_cookie:
+            if student_name in self._students and self._students[student_name]["cookie"] == student_cookie:
                 self._students[student_name]["student_msgs"][self._num_of_msgs] = {"msg": msg, "time": key_time}
                 self._num_of_msgs_lock.acquire()
                 self._num_of_msgs += 1
@@ -57,7 +57,7 @@ class TeacherChatSession(object):
     def get_teacher_msgs(self, student_name, student_cookie):
         self._students[student_name]["std_lock"].acquire()
         try:
-            if student_name in self._students and self._students[student_name]["student_cookie"] == student_cookie:
+            if student_name in self._students and self._students[student_name]["cookie"] == student_cookie:
                 msgs = self._students[student_name]["responses"]
                 ur_msgs = self._students[student_name]["student_msgs"]
 
