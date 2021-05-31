@@ -134,7 +134,7 @@ class DBApp(FlaskAppBase):
 
                 # case changing or inserting class
                 elif 'class_' in data and data['class_'] is not None:
-                    class_details = data['class']
+                    class_details = data['class_']
                     class_name = class_details['class_name']
                     # update class if exists already
                     if self._db_data_manager.class_exists(class_name):
