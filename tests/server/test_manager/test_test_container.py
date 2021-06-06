@@ -1,3 +1,5 @@
+import collections
+
 import pytest
 
 from server.test_manager.data_containers.test import Test
@@ -42,12 +44,14 @@ def run_container_pickle_and_unpickle(tests, json_path):
     test_container = TestContainer()
     test_container.set_tests_json_path(json_path)
     test_container.deserialize()
+    items = list(test_container.Tests.values())
+    items.sort(key=lambda x: int(x.TestId))
 
     # Assert
-    for expected_test, actual_test in zip(tests, test_container.Tests.values()):
+    for expected_test, actual_test in zip(tests, items):
         assert expected_test.TestId == actual_test.TestId, \
             f"Unexpected test {expected_test.TestId}"
-        assert expected_test.PickledFilePath == actual_test.PickledFilePath
+        assert str(expected_test.PickledFilePath) == str(actual_test.PickledFilePath)
         assert expected_test.Questions == actual_test.Questions
 
 

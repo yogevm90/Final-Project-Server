@@ -119,7 +119,7 @@ class Test(Serializable, Jsonable):
 
         :param path: path to pickle to
         """
-        self._path_to_pickled_file = path
+        self._path_to_pickled_file = Path(path)
 
     def append_question(self, question: Question):
         """
@@ -159,10 +159,11 @@ class Test(Serializable, Jsonable):
         return self
 
     def _set_pickled_file_path(self):
-        pickled_tests = Path(os.path.join(os.path.dirname(__file__), "pickled_tests"))
-        if not pickled_tests.is_dir():
-            pickled_tests.mkdir()
-        self._path_to_pickled_file = pickled_tests / f"{self._test_id}.bin"
+        if str(self._path_to_pickled_file) == "":
+            pickled_tests = Path(os.path.join(os.path.dirname(__file__), "pickled_tests"))
+            if not pickled_tests.is_dir():
+                pickled_tests.mkdir()
+            self._path_to_pickled_file = pickled_tests / f"{self._test_id}.bin"
 
     def from_json(self, json_val: Dict):
         """
